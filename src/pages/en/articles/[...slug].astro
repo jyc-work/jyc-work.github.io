@@ -18,18 +18,18 @@ const {Content,headings}=await render(entry);
       <h1>{entry.data.title}</h1><p class="article-intro">{entry.data.description}</p>
       <div class="tags article-tags">{entry.data.tags.map(tag=><span>{tag}</span>)}</div>
       <p class="source-alert">Verification: <strong>public source review only</strong>, not independent runtime reproduction.
-        <a href={\`\${entry.data.repository}/commit/\${entry.data.revision}\`} target="_blank" rel="noopener noreferrer">Pinned commit {entry.data.revision.slice(0,10)} ↗</a>
+        <a href={`${entry.data.repository}/commit/${entry.data.revision}`} target="_blank" rel="noopener noreferrer">Pinned commit {entry.data.revision.slice(0,10)} ↗</a>
       </p>
       <ReadingToc lang="en" headings={headings}/>
       <div class="prose"><Content /></div>
       <div class="article-end">
         <a href="/en/articles/">← All articles</a>
-        <a href={\`/blog/\${entry.data.zhSlug}/\`} hreflang="zh-CN">Read Chinese edition →</a>
+        <a href={`/blog/${entry.data.zhSlug}/`} hreflang="zh-CN">Read Chinese edition →</a>
       </div>
     </article>
     <aside class="toc" aria-label="Table of contents">
       <div class="toc-title">On this page</div>
-      {headings.filter(h=>h.depth===2||h.depth===3).map(h=><a class:list={['toc-item',{'toc-nested':h.depth===3}]} href={\`#\${h.slug}\`}>{h.text}</a>)}
+      {headings.filter(h=>h.depth===2||h.depth===3).map(h=><a class:list={['toc-item',{'toc-nested':h.depth===3}]} href={`#${h.slug}`}>{h.text}</a>)}
     </aside>
   </div>
 </Base>
