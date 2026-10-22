@@ -1,0 +1,73 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('blogEn', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+---
+<Base locale="en" title="JYC Engineering Lab" description="Engineering notes on Agent systems, Java, data platforms, frontend development, and reproducible technical work." alternatePath="/">
+  <section class="hero container">
+    <div class="hero-copy">
+      <h1><span class="cyber-glitch" data-text="Engineering, backed by evidence.">Engineering, backed by evidence.</span><br /><span class="gradient-text">Designed to be verified.</span></h1>
+      <p class="hero-zh">Technical decisions should be explainable. Engineering claims should be inspectable.</p>
+      <p class="hero-desc">A personal engineering journal focused on Agent systems, Java backends, data platforms, frontend development, and reproducible experiments.</p>
+      <div class="hero-actions">
+        <a class="btn primary" href="/en/projects/">Explore projects <span aria-hidden="true">↗</span></a>
+        <a class="btn secondary" href="/en/blog/">Read engineering articles <span aria-hidden="true">→</span></a>
+      </div>
+      <div class="fx-console"><button class="fx-switch" type="button" aria-label="Toggle visual effects" aria-pressed="false">Effects: Off</button></div>
+    </div>
+    <div class="hero-visual" aria-label="Neon city artwork and a simulated engineering workflow">
+      <div class="night-city-art" style="background-image:url('/night-city-skyline-en.svg')" aria-hidden="true"></div>
+      <div class="orb orb-a"></div><div class="orb orb-b"></div>
+      <div class="orbit orbit-one"></div><div class="orbit orbit-two"></div>
+      <div class="terminal-card">
+        <div class="terminal-top"><span class="terminal-dots"><i></i><i></i><i></i></span><span>Engineering workflow example</span></div>
+        <div class="terminal-body" id="cyber-runtime-lines" aria-hidden="true">
+          <div><span class="line-number">01</span> BOOT · initialize example workflow</div>
+          <div><span class="line-number">02</span> OK · load project index</div>
+          <div><span class="line-number">03</span> OK · register available tools</div>
+          <div><span class="line-number">04</span> DEMO · record simulated tool call</div>
+          <div><span class="line-number">05</span> OK · inspect evidence record</div>
+          <div><span class="line-number">06</span> READY · await user interaction</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="container section-block">
+    <div class="section-heading"><div><div class="section-kicker">PROJECTS</div><h2>Engineering in practice<span class="accent">.</span></h2><p>Source code, design decisions, verification status, and known limitations.</p></div><a class="text-link" href="/en/projects/">All projects <span>↗</span></a></div>
+    <div class="project-grid">
+      <a class="project-card" href="/en/blog/astro-pages-engineering-case/">
+        <div class="card-head"><span class="card-index">01</span><span class="status-pill">Public source</span></div>
+        <div class="project-glyph" aria-hidden="true">⌘</div><div class="project-category">Static publishing · Quality engineering</div>
+        <h3>JYC Engineering Lab</h3><p>An Astro site with a source-backed publishing workflow and browser regression tests.</p>
+        <div class="stack-list"><span>Astro</span><span>GitHub Actions</span><span>Playwright</span></div><span class="card-arrow">↗</span>
+      </a>
+      <a class="project-card" href="/en/blog/playwright-mobile-regression/">
+        <div class="card-head"><span class="card-index">02</span><span class="status-pill">Source reviewed</span></div>
+        <div class="project-glyph" aria-hidden="true">⌁</div><div class="project-category">Frontend · Regression testing</div>
+        <h3>Mobile Regression Suite</h3><p>Browser-level checks for responsive layout, semantic navigation, keyboard behavior, and state persistence.</p>
+        <div class="stack-list"><span>TypeScript</span><span>Playwright</span><span>Accessibility</span></div><span class="card-arrow">↗</span>
+      </a>
+    </div>
+  </section>
+
+  <section class="container section-block">
+    <div class="section-heading"><div><div class="section-kicker">ENGINEERING ARTICLES</div><h2>Notes with evidence<span class="accent">.</span></h2><p>Each case separates source inspection, test results, and unverified assumptions.</p></div><a class="text-link" href="/en/blog/">All articles <span>↗</span></a></div>
+    <div class="article-list">
+      {posts.map((post, index) => (
+        <a class="article-row" href={`/en/blog/${post.id}/`}>
+          <span class="article-index">{String(index + 1).padStart(2, '0')}</span>
+          <div class="article-row-main"><h3>{post.data.title}</h3><p>{post.data.description}</p><div class="tags">{post.data.tags.map((tag) => <span>{tag}</span>)}</div></div>
+          <span class="article-date">{post.data.date.toISOString().slice(0, 10)}</span><span class="article-go">↗</span>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <section class="learning-teaser container">
+    <div><div class="section-kicker">EDITORIAL STANDARD</div><h2>Evidence before claims<span class="accent">.</span></h2><p>Published engineering cases include a pinned source revision, direct evidence links, reproduction steps, and a limitations section. A source review is not presented as an independent runtime test.</p></div>
+    <a href="https://github.com/jyc-work/jyc-work.github.io" class="btn secondary" target="_blank" rel="noopener noreferrer">Inspect the source <span>↗</span></a>
+  </section>
+</Base>
