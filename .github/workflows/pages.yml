@@ -26,6 +26,8 @@ jobs:
         run: npm install --no-fund --no-audit
       - name: Enforce public engineering article quality gate
         run: python3 scripts/blog_quality.py
+      - name: Validate English engineering article editions
+        run: python3 scripts/check_en_publication.py
       - name: Typecheck and generate static site
         run: npm run build
       - name: Validate technology tracker
