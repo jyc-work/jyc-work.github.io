@@ -89,3 +89,18 @@ The original JYC neon district theme is inspired by cyberpunk visual design; it 
 ### Night Circuit visual correction
 
 Following feedback that bright yellow resembled promotional artwork rather than a futuristic city at night, the original JYC site now uses midnight blue, electric cyan, violet atmosphere, and magenta signage. The local `public/night-city-skyline.svg` is original vector decoration, not game art. Learning progress, GitHub update timelines, and mobile controls are preserved.
+
+## Engineering-grade publication rules
+
+The blog publishes only source-backed engineering case studies and incident analyses; short reading notes, tutorials without reproducible evidence, and project ideas remain **drafts** or knowledge-base material.
+
+- Public posts require `kind`, `verification`, pinned full `revision`, repository URL and direct source/evidence links.
+- The offline publication gate `python3 scripts/blog_quality.py` checks the required metadata and structure.
+- The Astro schema validates field shapes. The CI workflow runs the publication gate, Astro build, Python tests and Chromium mobile smoke tests.
+- Evidence grades are explicit: `source-reviewed` is **not** independently reproduced; `runtime-tested` needs linked test reports; `externally-reproduced` requires independent artifacts.
+- A project without public code or reproducible testing may be documented as **in progress**, never marketed as publicly verified.
+- Third-party upstream forks are documented as source studies, not original authored systems.
+
+The publication gate is editorial automation, not a technical truth oracle; human review remains necessary.
+
+Run locally: `python3 scripts/blog_quality.py && python3 -m unittest discover -s scripts/tests -v && npm run build && npm run test:e2e`.
