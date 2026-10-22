@@ -3,6 +3,7 @@ import '../styles/global.css';
 import '../styles/updates.css';
 import '../styles/commands.css';
 import '../styles/mobile.css';
+import '../styles/cyberpunk.css';
 
 interface Props {
   title?: string;
@@ -29,7 +30,7 @@ const links = [
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#080c17" />
+    <meta name="theme-color" content="#0c0c0e" />
     <meta name="description" content={description} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
@@ -84,6 +85,7 @@ const links = [
     </div>
     <button class="back-to-top" type="button" aria-label="返回顶部" title="返回顶部" hidden>↑</button>
     <script>
+      import '../scripts/cyberpunk';
       const menuButton = document.querySelector<HTMLButtonElement>('.mobile-menu-toggle');
       const menu = document.querySelector<HTMLElement>('#primary-navigation');
       const mobileViewport = window.matchMedia('(max-width: 780px)');
