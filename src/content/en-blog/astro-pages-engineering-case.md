@@ -27,7 +27,7 @@ This case study inspects the repository at the pinned revision linked above. **V
 
 The repository uses Astro 5, TypeScript, GitHub Actions, and Playwright, with Node.js 22 configured in the publishing workflow. The site compiles into static assets and does not require an always-on Node.js server to serve the public content.
 
-The version boundary matters. Dependency ranges in \`package.json\` and an installation step based on \`npm install\` are less deterministic than a committed lockfile installed with \`npm ci\`. Different dependency resolutions may produce different outputs even if the source commit stays constant.
+The version boundary matters. Dependency ranges in `package.json` and an installation step based on `npm install` are less deterministic than a committed lockfile installed with `npm ci`. Different dependency resolutions may produce different outputs even if the source commit stays constant.
 
 Run the same checks locally with Node.js 22:
 
@@ -43,7 +43,7 @@ These commands describe how to reproduce the development checks. They are not a 
 
 ## Design: validation and release are distinct states
 
-The repository's workflow listens for pull requests and pushes to \`main\`. Validation happens before publishing. The deployment stage is separate and is not intended to publish a pull-request head as the public site.
+The repository's workflow listens for pull requests and pushes to `main`. Validation happens before publishing. The deployment stage is separate and is not intended to publish a pull-request head as the public site.
 
 The following is a **simplified illustration**; inspect the pinned workflow for the authoritative configuration.
 
@@ -77,7 +77,7 @@ The important architectural boundary is not the YAML syntax. It is the state tra
 
 1. A change enters review as a pull request.
 2. Static compilation and automated tests provide bounded evidence.
-3. A reviewed change is merged to \`main\`.
+3. A reviewed change is merged to `main`.
 4. A main-branch workflow can publish artifacts.
 5. Production reachability and actual rendered behavior still require independent confirmation.
 
@@ -104,7 +104,7 @@ The same test suite covers keyboard-controlled navigation, copy-code controls, r
 
 The pinned evidence links expose the workflow, package definition, content schema, and browser tests. A technical reviewer can inspect whether the described steps exist and which behaviors the tests actually assert.
 
-When documenting a specific CI run, an evidence-complete report should also attach the run URL, commit SHA, job conclusion, exit codes, logs, and ideally test artifacts. Merely showing \`npm run build\` in documentation is insufficient.
+When documenting a specific CI run, an evidence-complete report should also attach the run URL, commit SHA, job conclusion, exit codes, logs, and ideally test artifacts. Merely showing `npm run build` in documentation is insufficient.
 
 Distinguish these levels carefully:
 
