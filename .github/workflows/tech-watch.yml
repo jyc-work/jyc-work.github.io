@@ -1,0 +1,67 @@
+name: Technology watch - review PR
+
+on:
+  schedule:
+    - cron: '17 12 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: tech-watch-review
+  cancel-in-progress: false
+
+jobs:
+  watch:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Avoid duplicate unreviewed PRs
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh pr list --state open --json headRefName --jq '.[] | select(.headRefName | startswith("tech-watch/")) | .headRefName' | grep -q .; then
+            echo "A tech-watch PR is already pending review."
+            echo "SKIP_WATCH=true" >> "$GITHUB_ENV"
+          fi
+      - name: Run source tracker and allowed AI providers
+        if: env.SKIP_WATCH != 'true'
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          NVIDIA_API_KEY: ${{ secrets.NVIDIA_API_KEY }}
+          OPENCODE_ZEN_API_KEY: ${{ secrets.OPENCODE_ZEN_API_KEY }}
+          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+          NVIDIA_MODEL: ${{ vars.NVIDIA_MODEL }}
+          OPENCODE_ZEN_MODEL: ${{ vars.OPENCODE_ZEN_MODEL }}
+          DEEPSEEK_MODEL: ${{ vars.DEEPSEEK_MODEL }}
+          ALLOW_PAID_AI: ${{ vars.ALLOW_PAID_AI }}
+        run: |
+          python -m unittest discover -s scripts/tests -v
+          python scripts/tech_watch.py
+      - name: Open review-only PR
+        if: env.SKIP_WATCH != 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if git diff --quiet -- data/tech-watch-state.json src/data/tech-watch.json; then
+            echo "No source change detected."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          BRANCH="tech-watch/${GITHUB_RUN_ID}"
+          git switch -c "$BRANCH"
+          git add data/tech-watch-state.json src/data/tech-watch.json
+          git commit -m "docs: refresh upstream technology watch (requires review)"
+          git push origin "$BRANCH"
+          gh pr create --base main --head "$BRANCH" --title "docs: review upstream technology changes" --body "Generated from the eight curated upstream repositories. Every entry includes a source commit URL, and AI summaries (if any) are unverified until this PR is reviewed. No third-party content is copied verbatim beyond short commit titles. This automation never merges or deploys itself."

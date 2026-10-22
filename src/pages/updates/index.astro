@@ -1,0 +1,36 @@
+---
+import Base from '../../layouts/Base.astro';
+import feed from '../../data/tech-watch.json';
+const updates = feed.updates as Array<{
+  repository: string; domain: string; sha: string; url: string; subject: string;
+  observed_at: string; summary: string; impact: string; next_action: string;
+  ai_provider: string; review_status: string;
+}>;
+---
+<Base title="技术动态" description="JYC Engineering Lab：跟踪精选 GitHub 技术源，记录人工审核后的提交更新">
+  <div class="container listing-page">
+    <div class="page-eyebrow">TECH WATCH / SOURCE FIRST</div>
+    <h1>技术动态<span class="accent">.</span></h1>
+    <p class="page-lead">跟踪精选开源项目。GitHub Actions 定期对比上游提交，AI 仅辅助生成“可能影响与下一步学习动作”；内容经 PR 审核合并后才出现在网站。</p>
+    <div class="watch-stats">
+      <div><span>跟踪仓库</span><strong>{feed.repository_count}</strong></div>
+      <div><span>已发布变更</span><strong>{updates.length}</strong></div>
+      <div><span>最近检查</span><strong class="watch-date">{feed.checked_at ? feed.checked_at.slice(0,10) : '尚未运行'}</strong></div>
+    </div>
+    <div class="detail-note">记录中的 AI 说明是学习辅助材料，不等于已证实的兼容性变化或性能结论。每条信息以 GitHub 原始 Commit 为核验入口；自动化只创建 PR，不自行合并。</div>
+    {updates.length === 0
+      ? <div class="watch-empty"><h2>正在建立技术观察基线</h2><p>首次检查将记录八个仓库的版本快照。后续发生变化时，经审核的观察记录会出现在这里。即使没有配置 AI 密钥，版本变化仍能跟踪。</p><a href="/learning/" class="btn secondary">查看学习路线 →</a></div>
+      : <div class="watch-feed">{updates.map((item)=>(
+        <article class="watch-entry">
+          <div class="watch-entry-top"><span>{item.domain}</span><span>{item.observed_at.slice(0,10)}</span></div>
+          <h2>{item.repository}</h2>
+          <p class="watch-subject">上游提交：{item.subject}</p>
+          <p><strong>摘要：</strong>{item.summary}</p>
+          <p><strong>影响判断：</strong>{item.impact}</p>
+          <p><strong>建议行动：</strong>{item.next_action}</p>
+          <div class="watch-entry-foot"><span>辅助模型：{item.ai_provider}</span><span>{item.review_status}</span><a href={item.url} target="_blank" rel="noopener noreferrer">查看原始 Commit ↗</a></div>
+        </article>
+      ))}</div>
+    }
+  </div>
+</Base>
