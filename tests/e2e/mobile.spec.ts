@@ -237,7 +237,7 @@ for(const width of [320,375,390,430]){
       await expect(page.locator('h1')).toBeVisible();
       await expect(page.locator('html')).toHaveAttribute('lang','en');
       const visibleText=await page.locator('body').innerText();
-      expect(visibleText, 'Chinese text leaked into English route: '+route).not.toMatch(/[\\u3400-\\u9fff]/);
+      expect(visibleText, 'Chinese text leaked into English route: '+route).not.toMatch(/[\u3400-\u9fff]/);
       await expect(page.locator('link[type="application/rss+xml"]')).toHaveCount(0);
       const actual=await page.evaluate(()=>document.documentElement.scrollWidth);
       expect(actual, 'overflow at '+route+' in '+width+'px').toBeLessThanOrEqual(width+2);
@@ -259,9 +259,9 @@ test('Unknown English routes render an English 404 page',async({page})=>{
   await expect(page.locator('html')).toHaveAttribute('lang','en');
   await expect(page.getByText("We couldn't find this page",{exact:false})).toBeVisible();
   const visibleText=await page.locator('body').innerText();
-  expect(visibleText).not.toMatch(/[\\u3400-\\u9fff]/);
+  expect(visibleText).not.toMatch(/[\u3400-\u9fff]/);
   await page.getByRole('link',{name:'Back to home'}).click();
-  await expect(page).toHaveURL(/\\/en\\/$/);
+  await expect(page).toHaveURL('http://127.0.0.1:4321/en/');
 });
 
 test('Sitemap includes English URLs and reciprocal hreflang pairs while RSS remains Chinese-only',async({request})=>{
