@@ -91,6 +91,9 @@ test('home runtime is explicitly simulated, and displays browser-local time', as
   await page.setViewportSize({width:390,height:780});
   await page.goto('/');
   await expect(page.getByText('STATUS : SIMULATED')).toBeVisible();
+  await expect(page.getByText('RUN_ID : DEMO-001')).toHaveCount(0);
+  await expect(page.getByText('本地演示 · 无实时服务器连接')).toHaveCount(0);
+  await expect(page.locator('.site-footer a[href="/rss.xml"]')).toHaveCount(0);
   await expect(page.locator('#cyber-runtime-lines > div')).toHaveCount(6);
   await expect(page.locator('#hud-local-clock')).toHaveText(/^[0-2][0-9]:[0-5][0-9]$/);
   await expect(page.locator('h1')).toBeVisible();
