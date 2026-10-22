@@ -2,14 +2,17 @@ import { getCollection } from 'astro:content';
 import { projects } from '../data/projects';
 import { learningPaths } from '../data/learning';
 export async function GET() {
-  const [posts, notes, commands] = await Promise.all([
+  const [posts, notes, commands, englishPosts] = await Promise.all([
     getCollection('blog', ({data})=>!data.draft),
     getCollection('knowledge', ({data})=>!data.draft),
-    getCollection('commands')
+    getCollection('commands'),
+    getCollection('enBlog', ({data})=>!data.draft)
   ]);
   const links = [
     '/', '/blog/', '/projects/', '/knowledge/', '/search/', '/learning/', '/commands/',
+    '/en/', '/en/articles/', '/en/projects/', '/en/projects/jyc-engineering-lab/',
     ...posts.map(x=>`/blog/${x.id}/`),
+    ...englishPosts.map(x=>`/en/articles/${x.id}/`),
     ...commands.map(x=>`/commands/${x.id}/`),
     ...notes.map(x=>`/knowledge/${x.id}/`),
     ...projects.map(x=>`/projects/${x.slug}/`),
