@@ -278,3 +278,6 @@ kbd { font: inherit; background: #1d2939; border: 1px solid #354358; padding: 1p
 /* Language switch: a functional control, not decorative microcopy. */
 .language-switch { display:inline-flex; align-items:center; justify-content:center; min-height:36px; padding:8px 12px; border:1px solid #273447; border-radius:8px; color:#b6c7de; background:#101a28; font-size:12px; line-height:1; white-space:nowrap; transition:border-color .2s,color .2s; }
 .language-switch:hover,.language-switch:focus-visible { color:var(--mint); border-color:var(--mint); }
+
+.section-block { padding-top:64px; padding-bottom:22px; }
+@media (max-width: 780px) { .section-block { padding-top:40px; padding-bottom:14px; } }
