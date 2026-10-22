@@ -83,7 +83,7 @@ const menuClose = isEnglish ? 'Close navigation menu' : '关闭导航菜单';
           </a>
           <nav id="primary-navigation" class="site-nav" aria-label={isEnglish ? "Main navigation" : "主导航"}>
             {links.map((link) => (
-              <a href={link.href} class:list={['nav-link', { active: link.href === '/' ? current === '/' : current.startsWith(link.href) }]} aria-current={(link.href === '/' ? current === '/' : current.startsWith(link.href)) ? 'page' : undefined}>{link.label}</a>
+              <a href={link.href} class:list={['nav-link', { active: (link.href === '/' || link.href === '/en/') ? current === link.href : current.startsWith(link.href) }]} aria-current={((link.href === '/' || link.href === '/en/') ? current === link.href : current.startsWith(link.href)) ? 'page' : undefined}>{link.label}</a>
             ))}
           </nav>
           <div class="header-actions">
