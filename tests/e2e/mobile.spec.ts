@@ -65,7 +65,7 @@ test('reduced motion preference is respected', async ({page})=>{
   await page.emulateMedia({reducedMotion:'reduce'});
   await page.setViewportSize({width:390,height:780});
   await page.goto('/');
-  const duration=await page.locator('.cursor').evaluate(el=>getComputedStyle(el).animationDuration);
+  const duration=await page.locator('.cyber-scanline').evaluate(el=>getComputedStyle(el).animationDuration);
   expect(Number.parseFloat(duration)).toBeLessThan(0.01);
 });
 
