@@ -18,7 +18,7 @@ export const projects: Project[] = [
   {
     slug: 'jyc-engineering-lab',
     name: 'JYC Engineering Lab',
-    category: 'Static Publishing · Quality Engineering',
+    category: '静态网站与质量工程',
     summary: '基于 Astro 的公开技术站：内容集合、可访问性、移动端浏览器回归与 GitHub Pages 自动构建和发布。',
     status: '公开源码 · 工程证据可查',
     visibility: '公开源码',
@@ -42,7 +42,7 @@ export const projects: Project[] = [
   {
     slug: 'dataops-copilot',
     name: 'DataOps Copilot V1',
-    category: 'Agent × Data Engineering',
+    category: 'Agent 与数据工程',
     summary: '通过采集运行证据、规则判断与模型辅助解释，支持数据平台故障诊断与恢复核验。',
     status: '内部验证记录整理中',
     visibility: '源码尚未公开',
@@ -59,7 +59,7 @@ export const projects: Project[] = [
   {
     slug: 'codebase-doc-generator',
     name: 'Codebase Doc Generator',
-    category: 'Developer Tooling',
+    category: '开发工具',
     summary: '面向源码结构理解、架构文档生成和引用校验的 Agent 工程实验。',
     status: '迭代与验证中',
     visibility: '源码未公开',
@@ -73,7 +73,7 @@ export const projects: Project[] = [
   {
     slug: 'deepseek-harness-study',
     name: 'Agent Harness Source Study',
-    category: 'Open Source Study',
+    category: '开源源码研究',
     summary: '从真实代码理解 Agent Loop、工具系统、状态管理和运行时的可靠性设计。',
     status: '源码学习',
     visibility: '公共研究仓库',
