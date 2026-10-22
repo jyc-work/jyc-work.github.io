@@ -1,0 +1,48 @@
+---
+import Base from '../../../layouts/Base.astro';
+const repo='https://github.com/jyc-work/jyc-work.github.io';
+const revision='8848d34d2bd6c8ad642f1103d62a7e2d1e9fcf5f';
+---
+<Base lang="en" title="JYC Engineering Lab — engineering case" description="A public Astro technical site with inspected CI configuration and browser regression contracts.">
+  <div class="container project-detail">
+    <div class="breadcrumbs"><a href="/en/">Home</a><span>/</span><a href="/en/projects/">Projects</a><span>/</span><span>JYC Engineering Lab</span></div>
+    <h1>JYC Engineering Lab<span class="accent">.</span></h1>
+    <p class="page-lead">A public engineering website whose delivery pipeline, content architecture, and Playwright browser contracts can be inspected at a pinned source revision.</p>
+    <div class="detail-labels"><span>Original work</span><span>Public source</span><span>Source-reviewed</span></div>
+    <div class="detail-grid">
+      <article>
+        <section class="detail-section"><h2>01 <span>/</span> Problem</h2>
+          <p>How can a changing content website prevent release regressions and clearly distinguish verified behavior from visual demonstrations or untested claims?</p>
+        </section>
+        <section class="detail-section"><h2>02 <span>/</span> Architecture</h2>
+          <p>Astro statically generates pages from structured content collections. TypeScript powers browser interactions, and GitHub Actions coordinates pull-request verification with a distinct Pages deployment stage.</p>
+          <p>The site supports source-backed case studies, knowledge reference pages, client-side learning-progress tracking, and a separately reviewed technology-update workflow.</p>
+        </section>
+        <section class="detail-section"><h2>03 <span>/</span> Inspectable evidence</h2>
+          <ul>
+            <li><a href={\`\${repo}/blob/\${revision}/.github/workflows/pages.yml\`} target="_blank" rel="noopener noreferrer">Pinned GitHub Actions workflow ↗</a></li>
+            <li><a href={\`\${repo}/blob/\${revision}/tests/e2e/mobile.spec.ts\`} target="_blank" rel="noopener noreferrer">Pinned browser regression tests ↗</a></li>
+            <li><a href={\`\${repo}/blob/\${revision}/src/content.config.ts\`} target="_blank" rel="noopener noreferrer">Pinned content schema ↗</a></li>
+            <li><a href="/en/articles/astro-pages-engineering-case/">CI/CD engineering case study →</a></li>
+            <li><a href="/en/articles/playwright-mobile-regression/">Mobile regression engineering case study →</a></li>
+          </ul>
+        </section>
+        <section class="detail-section"><h2>04 <span>/</span> Known limits</h2>
+          <ul>
+            <li>Source-reviewed is not a claim of independent runtime execution.</li>
+            <li>Chromium viewport checks do not replace testing on physical mobile devices and multiple browser engines.</li>
+            <li>Build reproducibility, post-deployment checks, and rollback procedures can be strengthened further.</li>
+          </ul>
+        </section>
+        <div class="detail-note">Evidence is pinned to commit {revision.slice(0,10)}. No private project files, employer code, or sensitive data are included in this public case study.</div>
+      </article>
+      <aside class="detail-side">
+        <div class="toc-title">Technology</div>
+        <div class="tags"><span>Astro</span><span>TypeScript</span><span>GitHub Actions</span><span>Playwright</span></div>
+        <div class="toc-title" style="margin-top:32px">Public repository</div>
+        <a href={repo} class="text-link" target="_blank" rel="noopener noreferrer">Inspect source ↗</a>
+        <a class="back-link" href="/en/projects/">← All projects</a>
+      </aside>
+    </div>
+  </div>
+</Base>
