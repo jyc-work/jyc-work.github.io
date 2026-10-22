@@ -94,8 +94,8 @@ test('home runtime is explicitly simulated, and displays browser-local time', as
   await expect(page.locator('#cyber-runtime-lines > div')).toHaveCount(6);
   await expect(page.locator('#hud-local-clock')).toHaveText(/^[0-2][0-9]:[0-5][0-9]$/);
   await expect(page.locator('h1')).toBeVisible();
-  const palette = await page.locator('html').evaluate(el=>getComputedStyle(el).getPropertyValue('--neon-yellow').trim());
-  expect(palette).toBe('#f3e600');
+  const palette = await page.locator('html').evaluate(el=>getComputedStyle(el).getPropertyValue('--neon-primary').trim());
+  expect(palette).toBe('#50ddff');
 });
 
 test('cyberpunk visual FX respects reduced-motion OS preference',async ({page})=>{
@@ -105,4 +105,20 @@ test('cyberpunk visual FX respects reduced-motion OS preference',async ({page})=
   await expect(page.getByRole('button',{name:'切换动态视觉特效'})).toHaveAttribute('aria-pressed','false');
   await expect(page.locator('html')).toHaveClass(/fx-off/);
   await expect(page.locator('#cyber-runtime-lines > div')).toHaveCount(6);
+});
+
+test('night-city palette and original skyline are present',async ({page})=>{
+  await page.setViewportSize({width:390,height:780});
+  await page.goto('/');
+  const sky=page.locator('.night-city-art');
+  await expect(sky).toBeVisible();
+  const style=await sky.evaluate(el=>getComputedStyle(el).backgroundImage);
+  expect(style).toContain('/night-city-skyline.svg');
+  const cssValues=await page.locator('html').evaluate(el=>({
+    main:getComputedStyle(el).getPropertyValue('--neon-primary').trim(),
+    secondary:getComputedStyle(el).getPropertyValue('--neon-pink').trim()
+  }));
+  expect(cssValues.main).toBe('#50ddff');
+  expect(cssValues.secondary).toBe('#ff4fab');
+  await expect(page.locator('.hero-telemetry')).toContainText('JYC-NIGHT');
 });
