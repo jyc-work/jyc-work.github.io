@@ -1,6 +1,6 @@
 /* JYC visual simulation: decorative client-side behavior, no live infrastructure metrics. */
 type TerminalEvent = { kind: string; detail: string; state: string };
-const events: TerminalEvent[] = [
+const chineseEvents: TerminalEvent[] = [
   {kind:'启动', detail:'初始化演示流程', state:'模拟'},
   {kind:'索引', detail:'读取文章与学习路线', state:'完成'},
   {kind:'工具', detail:'加载工具列表', state:'完成'},
@@ -9,6 +9,16 @@ const events: TerminalEvent[] = [
   {kind:'待命', detail:'等待页面操作', state:'就绪'}
 ];
 const root = document.documentElement;
+const isEnglish = root.lang === 'en';
+const englishEvents: TerminalEvent[] = [
+  {kind:'Start', detail:'Initialize example workflow', state:'Demo'},
+  {kind:'Index', detail:'Read articles and projects', state:'Done'},
+  {kind:'Tools', detail:'Load tool list', state:'Done'},
+  {kind:'Events', detail:'Record simulated steps', state:'Demo'},
+  {kind:'Review', detail:'Check source evidence', state:'Done'},
+  {kind:'Ready', detail:'Await interaction', state:'Ready'}
+];
+const events = isEnglish ? englishEvents : chineseEvents;
 const fxButton = document.querySelector<HTMLButtonElement>('.fx-switch');
 const terminal = document.querySelector<HTMLElement>('#cyber-runtime-lines');
 const heroVisual = document.querySelector<HTMLElement>('.hero-visual');
@@ -61,8 +71,8 @@ function setFX(enabled:boolean, persist=false) {
   root.classList.toggle('fx-off',!fxEnabled);
   if(fxButton) {
     fxButton.setAttribute('aria-pressed',String(fxEnabled));
-    fxButton.textContent='动效：'+(fxEnabled?'开':'关');
-    fxButton.title=fxEnabled?'关闭视觉特效':'开启视觉特效';
+    fxButton.textContent=isEnglish ? `Effects: ${fxEnabled?'on':'off'}` : '动效：'+(fxEnabled?'开':'关');
+    fxButton.title=isEnglish ? (fxEnabled?'Turn visual effects off':'Turn visual effects on') : (fxEnabled?'关闭视觉特效':'开启视觉特效');
   }
   if(persist) safeSet(enabled?'on':'off');
   if(!fxEnabled && heroVisual){

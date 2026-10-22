@@ -9,8 +9,8 @@ for (const width of widths) {
     for (const path of paths) {
       await page.goto(path);
       await expect(page.locator('h1')).toBeVisible();
-      const documentWidth = await page.evaluate(() => document.documentElement.scrollWidth);
-      expect(documentWidth, `Unexpected horizontal overflow on ${path} at ${width}px`).toBeLessThanOrEqual(width+2);
+      await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth),
+        { message: `Unexpected horizontal overflow on ${path} at ${width}px` }).toBeLessThanOrEqual(width+2);
     }
   });
 }
@@ -196,7 +196,7 @@ test('Chinese and English home are reciprocal with canonical language metadata',
   await page.getByRole('link',{name:'View the English version'}).click();
   await expect(page).toHaveURL(/\/en\/$/);
   await expect(page.locator('html')).toHaveAttribute('lang','en');
-  await expect(page.locator('h1')).toContainText('Engineering');
+  await expect(page.locator('h1')).toContainText('Let code be evidence');
   await page.getByRole('button',{name:'Open navigation menu'}).click();
   await expect(page.getByRole('navigation',{name:'Main navigation'})).toBeVisible();
   await page.keyboard.press('Escape');
@@ -205,6 +205,20 @@ test('Chinese and English home are reciprocal with canonical language metadata',
   await page.getByRole('link',{name:'Read in Chinese'}).click();
   await expect(page).toHaveURL(/\/$/);
   await expect(page.locator('html')).toHaveAttribute('lang','zh-CN');
+});
+
+test('English home uses the same animated hero and an English effects control',async({page})=>{
+  await page.goto('/en/');
+  await expect(page.locator('h1 .cyber-glitch')).toHaveAttribute('data-text','Let code be evidence');
+  await expect(page.locator('.orbit')).toHaveCount(2);
+  await expect(page.locator('#cyber-runtime-lines > div')).toHaveCount(6);
+  await expect(page.locator('#cyber-runtime-lines')).toContainText('Initialize example workflow');
+  const effects = page.getByRole('button',{name:'Toggle visual effects'});
+  await effects.click();
+  await expect(effects).toHaveText('Effects: off');
+  await expect(page.locator('html')).toHaveClass(/fx-off/);
+  await effects.click();
+  await expect(effects).toHaveText('Effects: on');
 });
 
 test('English articles have public evidence, localized TOC, working copy, and real Chinese counterparts',async({page,context})=>{

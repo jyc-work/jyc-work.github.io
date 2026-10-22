@@ -1,0 +1,44 @@
+---
+interface Props { lang: 'zh-CN' | 'en' }
+const isEnglish = Astro.props.lang === 'en';
+const copy = isEnglish ? {
+  lead: 'Let code be evidence', heading: 'Solve problems with engineering',
+  summary: 'Every technical conclusion deserves code, an experiment, or an explicit evidence boundary.',
+  detail: 'I document design decisions, implementation, and reproducible checks across software engineering and reliable delivery.',
+  projects: 'Explore projects', articles: 'Read articles',
+  visual: 'Original neon city illustration and a simulated engineering workflow',
+  terminal: 'Example engineering workflow',
+  rows: ['Start · Initialize example workflow', 'Done · Read tool list', 'Done · Load access rules', 'Simulate · Call a tool', 'Done · Review execution record', 'Ready · Await interaction']
+} : {
+  lead: '让代码成为证据', heading: '以工程解决问题',
+  summary: '让每一项技术结论，都有代码、实验或清晰的证据边界。',
+  detail: '围绕 Agent Engineering、Java 后端、数据工程与全栈开发，持续记录设计取舍、踩坑过程和可复现的技术实验。',
+  projects: '探索项目', articles: '阅读文章',
+  visual: '原创霓虹都市视觉与模拟工程终端', terminal: '工程流程示例',
+  rows: ['启动 · 初始化演示流程', '完成 · 读取工具列表', '完成 · 加载权限规则', '模拟 · 发起工具调用', '完成 · 核对执行记录', '待命 · 等待操作']
+};
+---
+<section class:list={['hero', 'container', { 'en-hero': isEnglish }]}>
+  <div class="hero-copy">
+    <h1><span class="cyber-glitch" data-text={copy.lead}>{copy.lead}</span><br /><span class="gradient-text">{copy.heading}</span></h1>
+    <p class="hero-zh">{copy.summary}</p>
+    <p class="hero-desc">{copy.detail}</p>
+    <div class="hero-actions">
+      <a class="btn primary" href={isEnglish ? '/en/projects/' : '/projects/'}>{copy.projects} <span aria-hidden="true">↗</span></a>
+      <a class="btn secondary" href={isEnglish ? '/en/articles/' : '/blog/'}>{copy.articles} <span aria-hidden="true">→</span></a>
+    </div>
+    <div class="fx-console"><button class="fx-switch" type="button" aria-label={isEnglish ? 'Toggle visual effects' : '切换动态视觉特效'} aria-pressed="false">{isEnglish ? 'Effects: off' : '动效：关'}</button></div>
+  </div>
+  <div class="hero-visual" aria-label={copy.visual}>
+    <div class="night-city-art" aria-hidden="true"></div>
+    <div class="orb orb-a"></div><div class="orb orb-b"></div>
+    <div class="orbit orbit-one"></div><div class="orbit orbit-two"></div>
+    <div class="terminal-card">
+      <div class="terminal-top"><span class="terminal-dots"><i></i><i></i><i></i></span><span>{copy.terminal}</span></div>
+      <div class="terminal-body" id="cyber-runtime-lines" aria-hidden="true">
+        {copy.rows.map((row, index) => <div><span class="line-number">{String(index + 1).padStart(2, '0')}</span> {row}</div>)}
+      </div>
+    </div>
+    <div class="cyber-scanline" aria-hidden="true"></div>
+  </div>
+</section>
