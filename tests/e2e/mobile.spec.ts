@@ -241,4 +241,9 @@ test('sitemap lists English pages and reciprocal hreflang pairs', async ({reques
   expect(xml).toContain('https://jyc-work.github.io/en/blog/astro-pages-engineering-case/');
   expect(xml).toContain('hreflang="zh-CN"');
   expect(xml).toContain('hreflang="en"');
+  const rssResponse=await request.get('http://127.0.0.1:4321/rss.xml');
+  expect(rssResponse.ok()).toBeTruthy();
+  const rssXml=await rssResponse.text();
+  expect(rssXml).toContain('<language>zh-cn</language>');
+  expect(rssXml).not.toContain('Engineering a Static Blog');
 });
