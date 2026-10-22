@@ -1,0 +1,55 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getCollection, render } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+export async function getStaticPaths(){
+  const entries=await getCollection('commands');
+  return entries.map(entry=>({params:{slug:entry.id},props:{entry}}));
+}
+const {entry}=Astro.props as {entry:CollectionEntry<'commands'>};
+const {Content,headings}=await render(entry);
+const related=(await getCollection('commands')).filter(item=>item.id!==entry.id&&item.data.category===entry.data.category)
+ .sort((a,b)=>a.data.order-b.data.order).slice(0,5);
+---
+<Base title={entry.data.title} description={entry.data.description}>
+  <div class="container command-reader-grid">
+    <article class="command-article">
+      <div class="breadcrumbs"><a href="/">首页</a><span>/</span><a href="/commands/">命令手册</a><span>/</span><span>{entry.data.category}</span></div>
+      <div class="page-eyebrow">COMMAND HANDBOOK / {entry.data.category}</div>
+      <h1>{entry.data.title}</h1>
+      <p class="command-intro">{entry.data.description}</p>
+      <div class="command-meta"><span>更新：{entry.data.updated.toISOString().slice(0,10)}</span><span>需要核对实际版本与执行权限</span></div>
+      <div class="command-warning">本页包含可复制的命令。执行前请检查实例、namespace、读写副作用及是否会访问真实业务数据。建议先在测试环境验证。</div>
+      <div class="prose command-prose"><Content /></div>
+      <div class="command-article-bottom">
+        <a href="/commands/">← 返回命令手册</a>
+        <a href={entry.data.source} target="_blank" rel="noopener noreferrer">查看官方文档 ↗</a>
+      </div>
+    </article>
+    <aside class="command-aside" aria-label="本页导航与相关专题">
+      <div class="toc-title">ON THIS PAGE</div>
+      {headings.filter(h=>h.depth===2||h.depth===3).map(h=>
+        <a class:list={['toc-item',{'toc-nested':h.depth===3}]} href={`#${h.slug}`}>{h.text}</a>)}
+      {related.length>0&&<div class="command-related">
+        <div class="toc-title">RELATED</div>
+        {related.map(item=><a href={`/commands/${item.id}/`}>{item.data.title} ↗</a>)}
+      </div>}
+    </aside>
+  </div>
+  <script>
+    document.querySelectorAll<HTMLPreElement>('.command-prose pre').forEach(pre=>{
+      const code = pre.querySelector('code');
+      if(!code)return;
+      const button = document.createElement('button');
+      button.type='button';
+      button.className='command-copy';
+      button.textContent='复制命令';
+      button.setAttribute('aria-label','复制当前代码块');
+      button.addEventListener('click',async()=>{
+        try { await navigator.clipboard.writeText(code.textContent ?? ''); button.textContent='已复制'; }
+        catch { button.textContent='请手动选择复制'; }
+      });
+      pre.appendChild(button);
+    });
+  </script>
+</Base>

@@ -1,0 +1,79 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getCollection } from 'astro:content';
+const entries = (await getCollection('commands')).sort((a,b)=>a.data.order-b.data.order);
+const groups = [
+ {name:'数据库与 SQL',label:'DATABASE',intro:'数据库查询、元数据检查、执行计划、慢查询与缓存故障定位'},
+ {name:'系统与终端',label:'OPERATING SYSTEM',intro:'Linux 文件、进程、网络与日志'},
+ {name:'容器与编排',label:'CONTAINERS',intro:'Docker、Kubernetes 和 containerd 三个工作层级'},
+ {name:'大数据组件',label:'DATA PLATFORM',intro:'HDFS、YARN、Kafka、Flink 排障与巡检'},
+ {name:'版本控制',label:'DEVELOPER TOOLS',intro:'Git 日常开发与协作排查'}
+];
+---
+<Base title="工程命令手册" description="Linux、Docker、K8s、containerd、Hadoop、Kafka、Flink、Git、SQL、MySQL、ClickHouse、PostgreSQL、Redis、GaussDB 速查">
+  <div class="container command-landing">
+    <div class="page-eyebrow">ENGINEER'S HANDBOOK / COMMAND REFERENCE</div>
+    <h1>工程命令手册<span class="accent">.</span></h1>
+    <p class="page-lead">把工作中经常要查的命令收在一处：先确认环境和版本，再复制示例；每篇说明用途、排障思路和操作风险。数据库 SQL 与系统命令分开归档，避免混淆方言。</p>
+    <div class="command-stats">
+      <div><strong>{entries.length}</strong><span>技术专题</span></div>
+      <div><strong>6</strong><span>数据库 / SQL 专题</span></div>
+      <div><strong>5</strong><span>分类导航</span></div>
+    </div>
+    <div class="command-controls">
+      <label for="handbook-filter">在全部命令专题中查找</label>
+      <input id="handbook-filter" type="search" placeholder="例如 system.query_log、kubectl logs、EXPLAIN、Redis…" autocomplete="off" />
+      <div class="command-filters" role="group" aria-label="按专题筛选">
+        <button type="button" data-group="all" aria-pressed="true">全部</button>
+        {groups.map(g=><button type="button" data-group={g.name} aria-pressed="false">{g.name}</button>)}
+      </div>
+      <p id="command-filter-result" class="command-filter-result" role="status" aria-live="polite">显示全部 {entries.length} 个专题</p>
+    </div>
+    <div class="command-guide-warning"><strong>运行前确认：</strong>目标环境、账号权限、软件版本、读写副作用、备份和回滚方式。特别是数据库 DDL、资源删除、强制合并与集群管理命令，不能直接复制到生产执行。</div>
+    {groups.map(group=><section class="command-group" data-section={group.name}>
+      <div class="command-group-heading">
+        <div><div class="section-kicker">{group.label}</div><h2>{group.name}<span class="accent">.</span></h2><p>{group.intro}</p></div>
+      </div>
+      <div class="command-card-grid">{entries.filter(entry=>entry.data.category===group.name).map(entry=>
+        <a class="command-card" href={`/commands/${entry.id}/`} data-category={entry.data.category} data-search={`${entry.data.title} ${entry.data.description} ${entry.data.keywords.join(' ')}`.toLowerCase()}>
+          <span class="command-card-label">{entry.data.category}</span>
+          <h3>{entry.data.title}</h3>
+          <p>{entry.data.description}</p>
+          <div class="command-tags">{entry.data.keywords.slice(0,4).map(tag=><span>{tag}</span>)}</div>
+          <span class="command-card-arrow" aria-hidden="true">↗</span>
+        </a>)}</div>
+    </section>)}
+    <p class="command-empty" hidden id="command-empty">没有匹配的专题。试试数据库名称、命令名称或中文关键词。</p>
+    <div class="command-reference-note">手册是技术速查而非生产执行脚本。命令未在你的具体运行环境逐条验证；版本或平台不同时，优先以文内链接的官方文档为准。</div>
+  </div>
+  <script>
+    const input = document.querySelector<HTMLInputElement>('#handbook-filter');
+    const buttons = Array.from(document.querySelectorAll<HTMLButtonElement>('.command-filters button'));
+    const cards = Array.from(document.querySelectorAll<HTMLElement>('.command-card'));
+    const sections = Array.from(document.querySelectorAll<HTMLElement>('.command-group'));
+    const status = document.querySelector<HTMLElement>('#command-filter-result');
+    const empty = document.querySelector<HTMLElement>('#command-empty');
+    let category = 'all';
+    function apply(){
+      const q = input?.value.trim().toLowerCase() ?? '';
+      let count = 0;
+      cards.forEach(card=>{
+        const match=(category === 'all' || card.dataset.category === category)
+          && (!q || (card.dataset.search ?? '').includes(q));
+        card.hidden = !match;
+        if(match)count++;
+      });
+      sections.forEach(section=>{
+        section.hidden = !Array.from(section.querySelectorAll('.command-card')).some(el=>!el.hasAttribute('hidden'));
+      });
+      if(status) status.textContent = `找到 ${count} 个专题`;
+      if(empty) empty.hidden = count > 0;
+    }
+    buttons.forEach(button=>button.addEventListener('click',()=>{
+      category=button.dataset.group ?? 'all';
+      buttons.forEach(b=>b.setAttribute('aria-pressed',String(b===button)));
+      apply();
+    }));
+    input?.addEventListener('input',apply);
+  </script>
+</Base>

@@ -21,4 +21,17 @@ const knowledge = defineCollection({
   schema
 });
 
-export const collections = { blog, knowledge };
+const commands = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/commands' }),
+  schema: z.object({
+    title: z.string(),
+    description: z.string(),
+    category: z.enum(['系统与终端','容器与编排','大数据组件','数据库与 SQL','版本控制']),
+    order: z.number().int(),
+    keywords: z.array(z.string()).default([]),
+    updated: z.coerce.date(),
+    source: z.string().url()
+  })
+});
+
+export const collections = { blog, knowledge, commands };
