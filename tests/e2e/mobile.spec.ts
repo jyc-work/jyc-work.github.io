@@ -193,9 +193,10 @@ test('English routes contain no Chinese UI text and expose reciprocal SEO metada
     await page.goto(path);
     await expect(page.locator('html')).toHaveAttribute('lang','en');
     const visibleText = await page.locator('body').innerText();
-    expect(visibleText, `Chinese text leaked into English route: ${path}`).not.toMatch(/[\\u3400-\\u9fff]/);
-    await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', new RegExp(path.replace(/[.*+?^${}()|[\\]\\\\]/g, '\\\\$&')));
-    await expect(page.locator('link[rel="alternate"][hreflang="zh-CN"]')).toHaveAttribute('href', /https:\\/\\/jyc-work\\.github\\.io\\//);
+    expect(visibleText, `Chinese text leaked into English route: ${path}`).not.toMatch(/[\u3400-\u9fff]/);
+    await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', `https://jyc-work.github.io${path}`);
+    const chinesePath = path === '/en/' ? '/' : path.replace(/^\/en/, '');
+    await expect(page.locator('link[rel="alternate"][hreflang="zh-CN"]')).toHaveAttribute('href', `https://jyc-work.github.io${chinesePath}`);
   }
 });
 
@@ -203,10 +204,10 @@ test('language switch follows the matching article when a translation exists', a
   await page.setViewportSize({width:390,height:780});
   await page.goto('/blog/astro-pages-engineering-case/');
   await page.getByRole('link',{name:'English'}).click();
-  await expect(page).toHaveURL(/\\/en\\/blog\\/astro-pages-engineering-case\\/$/);
+  await expect(page).toHaveURL('http://127.0.0.1:4321/en/blog/astro-pages-engineering-case/');
   await expect(page.locator('html')).toHaveAttribute('lang','en');
   await page.getByRole('link',{name:'Chinese'}).click();
-  await expect(page).toHaveURL(/\\/blog\\/astro-pages-engineering-case\\/$/);
+  await expect(page).toHaveURL('http://127.0.0.1:4321/blog/astro-pages-engineering-case/');
 });
 
 test('English mobile navigation works and preserves the English interface', async ({page}) => {
@@ -227,9 +228,9 @@ test('English 404 page localizes unknown English paths', async ({page}) => {
   await expect(page.locator('html')).toHaveAttribute('lang','en');
   await expect(page.getByText("We couldn't find this page",{exact:false})).toBeVisible();
   const visibleText=await page.locator('body').innerText();
-  expect(visibleText).not.toMatch(/[\\u3400-\\u9fff]/);
+  expect(visibleText).not.toMatch(/[\u3400-\u9fff]/);
   await page.getByRole('link',{name:'Back to home'}).click();
-  await expect(page).toHaveURL(/\\/en\\/$/);
+  await expect(page).toHaveURL('http://127.0.0.1:4321/en/');
 });
 
 test('sitemap lists English pages and reciprocal hreflang pairs', async ({request}) => {
