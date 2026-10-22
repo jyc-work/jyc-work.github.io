@@ -35,7 +35,8 @@ if (isEnglish) {
 }
 const resolvedAlternatePath = props.alternatePath ?? inferredAlternatePath;
 const alternateUrl = resolvedAlternatePath ? new URL(resolvedAlternatePath, Astro.site).toString() : undefined;
-const languageHref = props.languageHref ?? resolvedAlternatePath ?? (isEnglish ? '/' : '/en/');
+const defaultLanguageHref = isEnglish ? '/' : current.startsWith('/blog/') ? '/en/blog/' : current.startsWith('/projects/') ? '/en/projects/' : '/en/';
+const languageHref = props.languageHref ?? resolvedAlternatePath ?? defaultLanguageHref;
 const links = isEnglish
   ? [
       { href: '/en/', label: 'Home' },
