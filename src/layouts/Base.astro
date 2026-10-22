@@ -66,10 +66,10 @@ const menuClose = isEnglish ? 'Close navigation menu' : '关闭导航菜单';
     {counterpart && chinesePath && englishPath && <>
       <link rel="alternate" hreflang="zh-CN" href={new URL(chinesePath, Astro.site).toString()} />
       <link rel="alternate" hreflang="en" href={new URL(englishPath, Astro.site).toString()} />
+      <link rel="alternate" hreflang="x-default" href={new URL(chinesePath, Astro.site).toString()} />
     </>}
-    {current === '/' && <link rel="alternate" hreflang="x-default" href={new URL('/', Astro.site).toString()} />}
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="alternate" type="application/rss+xml" title={isEnglish ? 'JYC Technical Blog RSS' : 'JYC 技术博客 RSS'} href="/rss.xml" />
+    {!isEnglish && <link rel="alternate" type="application/rss+xml" title="JYC 技术博客 RSS" href="/rss.xml" />}
     <title>{title === localizedBrand ? title : `${title} · ${localizedBrand}`}</title>
   </head>
   <body>
@@ -88,7 +88,7 @@ const menuClose = isEnglish ? 'Close navigation menu' : '关闭导航菜单';
           </nav>
           <div class="header-actions">
             {!isEnglish && <a class="header-search" href="/search/" aria-label="搜索文章"><span aria-hidden="true">⌕</span> <span>搜索</span><kbd>/</kbd></a>}
-            {counterpart && <a class="lang-switch" href={counterpart} hreflang={isEnglish ? 'zh-CN' : 'en'} lang={isEnglish ? 'zh-CN' : 'en'} aria-label={isEnglish ? 'Read in Chinese' : 'View the English version'}>{isEnglish ? '中文' : 'EN'}</a>}
+            {counterpart && <a class="lang-switch" href={counterpart} hreflang={isEnglish ? 'zh-CN' : 'en'} lang={isEnglish ? 'zh-CN' : 'en'} aria-label={isEnglish ? 'Read in Chinese' : 'View the English version'}>{isEnglish ? 'Chinese' : 'EN'}</a>}
             <button class="mobile-menu-toggle" type="button" aria-controls="primary-navigation" aria-expanded="false" aria-label={menuOpen} data-label-open={menuOpen} data-label-close={menuClose}>
               <svg class="menu-bars" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
               <svg class="menu-x" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19"/></svg>
