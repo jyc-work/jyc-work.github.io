@@ -1,0 +1,81 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+const {
+  title = 'Nomiga Engineering Lab',
+  description = 'Agent Engineering · Data Systems · Full-stack · Reproducible Research'
+} = Astro.props;
+const current = Astro.url.pathname;
+const canonical = new URL(Astro.url.pathname, Astro.site).toString();
+const links = [
+  { href: '/', label: '首页' },
+  { href: '/blog/', label: '技术文章' },
+  { href: '/projects/', label: '项目作品' },
+  { href: '/knowledge/', label: '知识库' }
+];
+---
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#080c17" />
+    <meta name="description" content={description} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="alternate" type="application/rss+xml" title="Nomiga Engineering Lab RSS" href="/rss.xml" />
+    <title>{title === 'Nomiga Engineering Lab' ? title : `${title} · Nomiga Engineering Lab`}</title>
+  </head>
+  <body>
+    <a class="skip-link" href="#content">跳到正文</a>
+    <div class="site-shell">
+      <header class="site-header">
+        <div class="header-inner container">
+          <a class="brand" href="/" aria-label="Nomiga Engineering Lab 首页">
+            <span class="brand-mark" aria-hidden="true">N<span class="brand-dot">.</span></span>
+            <span class="brand-copy"><strong>NOMIGA</strong><small>ENGINEERING LAB</small></span>
+          </a>
+          <nav class="site-nav" aria-label="主导航">
+            {links.map((link) => (
+              <a href={link.href} class:list={['nav-link', { active: link.href === '/' ? current === '/' : current.startsWith(link.href) }]}>{link.label}</a>
+            ))}
+          </nav>
+          <a class="header-search" href="/search/" aria-label="搜索文章"><span aria-hidden="true">⌕</span> <span>搜索</span><kbd>/</kbd></a>
+        </div>
+      </header>
+
+      <main id="content"><slot /></main>
+
+      <footer class="site-footer">
+        <div class="container footer-inner">
+          <div>
+            <strong>NOMIGA <span class="accent">/</span> ENGINEERING LAB</strong>
+            <p>记录可解释的工程决策，分享可验证的技术成果。</p>
+          </div>
+          <div class="footer-links">
+            <a href="/rss.xml">RSS</a>
+            <a href="https://github.com/jyc-work" target="_blank" rel="noopener noreferrer">GitHub ↗</a>
+            <a href="/knowledge/agent-patterns/">来源与引用</a>
+          </div>
+          <span class="copyright">© {new Date().getFullYear()} Nomiga · Built with Astro</span>
+        </div>
+      </footer>
+    </div>
+    <script>
+      document.addEventListener('keydown', (event) => {
+        const target = event.target;
+        if (event.key === '/' && !(target instanceof HTMLInputElement) && !(target instanceof HTMLTextAreaElement) && !event.metaKey && !event.ctrlKey) {
+          event.preventDefault();
+          window.location.href = '/search/';
+        }
+      });
+    </script>
+  </body>
+</html>

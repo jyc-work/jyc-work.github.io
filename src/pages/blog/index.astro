@@ -1,0 +1,16 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getCollection } from 'astro:content';
+const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort((a,b) => b.data.date.getTime() - a.data.date.getTime());
+---
+<Base title="技术文章" description="从问题到验证，分享 Agent、数据工程和全栈开发实践">
+  <div class="container listing-page">
+    <div class="page-eyebrow">JOURNAL / BLOG</div><h1>技术文章<span class="accent">.</span></h1><p class="page-lead">优先写清楚问题、设计取舍和验证方法；将计划与已完成实验明确区分。</p>
+    <div class="listing-meta"><span>{posts.length} ARTICLES</span><a href="/rss.xml">RSS ↗</a></div>
+    <div class="article-list">{posts.map((post, i) => (
+      <a class="article-row" href={`/blog/${post.id}/`}>
+        <span class="article-index">{String(i+1).padStart(2,'0')}</span><div class="article-row-main"><h3>{post.data.title}</h3><p>{post.data.description}</p><div class="tags">{post.data.tags.map((tag) => <span>{tag}</span>)}</div></div><span class="article-date">{post.data.date.toISOString().slice(0,10)}</span><span class="article-go">↗</span>
+      </a>
+    ))}</div>
+  </div>
+</Base>

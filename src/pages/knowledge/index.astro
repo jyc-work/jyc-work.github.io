@@ -1,0 +1,18 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getCollection } from 'astro:content';
+const notes = (await getCollection('knowledge', ({ data }) => !data.draft)).sort((a,b)=>b.data.date.getTime()-a.data.date.getTime());
+---
+<Base title="公开知识库" description="Agent 工程、Harness、可观测性与知识索引">
+  <div class="container listing-page">
+    <div class="page-eyebrow">OPEN KNOWLEDGE / INDEX</div><h1>公开知识库<span class="accent">.</span></h1>
+    <p class="page-lead">把资料转化为可理解、可追溯、可验证的知识。收录原创结构化笔记和源链接，不镜像第三方课程全文。</p>
+    <div class="knowledge-index">
+      {notes.map((note, i) => <a href={`/knowledge/${note.id}/`} class="knowledge-item">
+        <div class="knowledge-item-top"><span>KNOWLEDGE / {String(i+1).padStart(2,'0')}</span><span>↗</span></div>
+        <h2>{note.data.title}</h2><p>{note.data.description}</p><div class="tags">{note.data.tags.map((tag)=><span>{tag}</span>)}</div>
+        {note.data.source && <span class="source-caption">含原始资料引用</span>}
+      </a>)}
+    </div>
+  </div>
+</Base>
