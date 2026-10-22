@@ -69,7 +69,7 @@ function setFX(enabled:boolean, persist=false) {
   if(fxButton) {
     fxButton.setAttribute('aria-pressed',String(fxEnabled));
     fxButton.textContent=document.documentElement.lang === 'en' ? 'Effects: '+(fxEnabled?'On':'Off') : '动效：'+(fxEnabled?'开':'关');
-    fxButton.title=fxEnabled?'关闭视觉特效':'开启视觉特效';
+    fxButton.title=document.documentElement.lang === 'en' ? (fxEnabled ? 'Turn visual effects off' : 'Turn visual effects on') : (fxEnabled ? '关闭视觉特效' : '开启视觉特效');
   }
   if(persist) safeSet(enabled?'on':'off');
   if(!fxEnabled && heroVisual){
