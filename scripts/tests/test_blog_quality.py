@@ -28,9 +28,34 @@ BODY = "\n".join([
     "## 局限与后续", "局限" * 100,
 ])
 
+
+EN_META = """---
+title: "English engineering case"
+description: "A source-backed case study."
+date: 2026-10-22
+kind: engineering-case
+verification: source-reviewed
+repository: "https://github.com/jyc-work/jyc-work.github.io"
+revision: "%s"
+evidence:
+  - "https://github.com/jyc-work/jyc-work.github.io/blob/%s/.github/workflows/pages.yml"
+  - "https://github.com/jyc-work/jyc-work.github.io/blob/%s/tests/e2e/mobile.spec.ts"
+---
+""" % (REV, REV, REV)
+EN_BODY = "\\n".join([
+    "## Problem and scope", "The problem and constraints are documented. " * 50,
+    "## Environment and versions", "The environment and dependency versions are documented. " * 35,
+    "## Design", "The design and trade-offs are documented. " * 35,
+    "## Reproduction", "~~~bash", "npm run build", "~~~", "Reproduction steps are listed. " * 35,
+    "## Verification", "~~~ts", "expect(true).toBeTruthy()", "~~~", "Verification evidence is described. " * 35,
+    "## Limitations", "Known limitations and follow-up work are explicit. " * 35,
+])
+
 class PublicationGateTests(unittest.TestCase):
     def test_good_engineering_article(self):
         self.assertEqual(check_document(META + BODY), [])
+    def test_english_engineering_article(self):
+        self.assertEqual(check_document(EN_META + EN_BODY, 'src/content/blog-en/example.md'), [])
     def test_missing_proof_fails(self):
         text = META.replace('  - "https://github.com/jyc-work/jyc-work.github.io/blob/%s/tests/e2e/mobile.spec.ts"\n' % REV,'')
         self.assertTrue(any("evidence" in x for x in check_document(text+BODY)))
