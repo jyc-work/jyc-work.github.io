@@ -1,5 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro';
+import ReadingToc from '../../components/ReadingToc.astro';
 import { getCollection, render } from 'astro:content';
 import type { CollectionEntry } from 'astro:content';
 export async function getStaticPaths() {
@@ -16,6 +17,7 @@ const { Content, headings } = await render(entry);
       <div class="page-eyebrow">FIELD NOTE / {entry.data.date.toISOString().slice(0,10)}</div>
       <h1>{entry.data.title}</h1><p class="article-intro">{entry.data.description}</p>
       <div class="tags article-tags">{entry.data.tags.map((tag) => <span>{tag}</span>)}</div>
+      <ReadingToc headings={headings} />
       <div class="prose"><Content /></div>
       <div class="article-end"><a href="/blog/">← 返回文章列表</a><a href="https://github.com/jyc-work/jyc-work.github.io" target="_blank" rel="noopener noreferrer">发现错误？查看仓库 ↗</a></div>
     </article>
