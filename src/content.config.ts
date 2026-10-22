@@ -21,6 +21,11 @@ const blog = defineCollection({
   schema
 });
 
+const blogEn = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/blog-en' }),
+  schema
+});
+
 const knowledge = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/knowledge' }),
   schema
@@ -39,4 +44,4 @@ const commands = defineCollection({
   })
 });
 
-export const collections = { blog, knowledge, commands };
+export const collections = { blog, blogEn, knowledge, commands };
