@@ -12,7 +12,7 @@ const groups = [
 ---
 <Base title="工程命令手册" description="Linux、Docker、K8s、containerd、Hadoop、Kafka、Flink、Git、SQL、MySQL、ClickHouse、PostgreSQL、Redis、GaussDB 速查">
   <div class="container command-landing">
-    <div class="page-eyebrow">ENGINEER'S HANDBOOK / COMMAND REFERENCE</div>
+    
     <h1>工程命令手册<span class="accent">.</span></h1>
     <p class="page-lead">把工作中经常要查的命令收在一处：先确认环境和版本，再复制示例；每篇说明用途、排障思路和操作风险。数据库 SQL 与系统命令分开归档，避免混淆方言。</p>
     <div class="command-stats">
@@ -32,7 +32,7 @@ const groups = [
     <div class="command-guide-warning"><strong>运行前确认：</strong>目标环境、账号权限、软件版本、读写副作用、备份和回滚方式。特别是数据库 DDL、资源删除、强制合并与集群管理命令，不能直接复制到生产执行。</div>
     {groups.map(group=><section class="command-group" data-section={group.name}>
       <div class="command-group-heading">
-        <div><div class="section-kicker">{group.label}</div><h2>{group.name}<span class="accent">.</span></h2><p>{group.intro}</p></div>
+        <div><h2>{group.name}<span class="accent">.</span></h2><p>{group.intro}</p></div>
       </div>
       <div class="command-card-grid">{entries.filter(entry=>entry.data.category===group.name).map(entry=>
         <a class="command-card" href={`/commands/${entry.id}/`} data-category={entry.data.category} data-search={`${entry.data.title} ${entry.data.description} ${entry.data.keywords.join(' ')}`.toLowerCase()}>

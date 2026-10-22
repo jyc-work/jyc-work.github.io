@@ -5,12 +5,12 @@ const stageCount=learningPaths.reduce((sum,path)=>sum+path.stages.length,0);
 ---
 <Base title="技术学习路线" description="五个领域的工程学习路线与八个精选开源学习项目">
   <div class="container listing-page">
-    <div class="page-eyebrow">CURRICULUM / ENGINEERING ROADMAP</div>
+    
     <h1>技术学习路线<span class="accent">.</span></h1>
     <p class="page-lead">从可运行的最小实现开始，逐步补齐原理、故障处理、测试和可复现的成果。覆盖 5 个领域，精选 GitHub 项目总计 8 个。</p>
 
     <section class="learning-progress-panel" aria-label="个人学习进度面板">
-      <div class="progress-header"><strong>SELF-ASSESSMENT / LOCAL PROGRESS</strong><span id="learning-progress-total" class="progress-total-label">0 / {stageCount}</span></div>
+      <div class="progress-header"><strong>个人学习进度</strong><span id="learning-progress-total" class="progress-total-label">0 / {stageCount}</span></div>
       <progress id="learning-total-bar" class="learning-meter" value="0" max={stageCount} aria-label="已自评完成的学习阶段"></progress>
       <p class="progress-subtitle">在各路线中完成动手任务并自行核对验收标准后，勾选对应阶段。本进度是个人自评，不代表本站已验证代码或考试成绩。</p>
       <div class="learning-progress-actions">
@@ -23,16 +23,16 @@ const stageCount=learningPaths.reduce((sum,path)=>sum+path.stages.length,0);
 
     <div class="roadmap-grid">
       {learningPaths.map((path,i)=><a href={`/learning/${path.slug}/`} class="roadmap-card" data-progress-slug={path.slug} data-progress-total={path.stages.length}>
-        <div class="roadmap-top"><span>TRACK / {String(i+1).padStart(2,'0')}</span><span>↗</span></div>
+        <div class="roadmap-top"><span>路线 {String(i+1).padStart(2,'0')}</span><span>↗</span></div>
         <div class="roadmap-subtitle">{path.subtitle}</div><h2>{path.title}</h2><p>{path.summary}</p>
         <div class="roadmap-footer"><span>{path.stages.length} 个阶段</span><span>{path.repositories.length} 个 GitHub 项目</span></div>
-        <div class="roadmap-progress"><div class="roadmap-progress-label"><span>SELF-CHECK PROGRESS</span><span data-progress-label>0 / {path.stages.length} 阶段</span></div><progress class="learning-meter" max={path.stages.length} value="0" aria-label={`${path.title} 个人学习进度`}></progress></div>
+        <div class="roadmap-progress"><div class="roadmap-progress-label"><span>已完成</span><span data-progress-label>0 / {path.stages.length} 阶段</span></div><progress class="learning-meter" max={path.stages.length} value="0" aria-label={`${path.title} 个人学习进度`}></progress></div>
       </a>)}
     </div>
 
-    <div class="section-heading resources-title"><div><div class="section-kicker">CURATED / 8 REPOSITORIES</div><h2>开源学习项目<span class="accent">.</span></h2><p>仅收录可确认的真实仓库，按学习价值而不是 Star 排名。</p></div></div>
+    <div class="section-heading resources-title"><div><h2>开源学习项目<span class="accent">.</span></h2><p>仅收录可确认的真实仓库，按学习价值而不是 Star 排名。</p></div></div>
     <div class="resource-grid">{featuredRepositories.map((repo,i)=><a href={repo.url} class="resource-card" target="_blank" rel="noopener noreferrer">
-      <div class="resource-top"><span>{String(i+1).padStart(2,'0')} / GITHUB</span><span class="resource-link">↗</span></div>
+      <div class="resource-top"><span>{String(i+1).padStart(2,'0')}</span><span class="resource-link">↗</span></div>
       <h3>{repo.name}</h3><div class="resource-domain">{repo.domain} · {repo.level}</div>
       <p>{repo.purpose}</p><div class="resource-task"><strong>实操：</strong>{repo.task}</div>
     </a>)}</div>

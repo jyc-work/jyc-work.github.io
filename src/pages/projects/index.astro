@@ -4,10 +4,10 @@ import { projects } from '../../data/projects';
 ---
 <Base title="项目作品集" description="公开展示项目目标、工程方法、证据状态和已知限制">
   <div class="container listing-page">
-    <div class="page-eyebrow">ENGINEERING / WORK</div><h1>项目作品集<span class="accent">.</span></h1>
+    <h1>项目作品集<span class="accent">.</span></h1>
     <p class="page-lead">源码是否公开、实验是否可复现、结论是否经过验证，都应该明确标注。研究项目不等同于已上线产品。</p>
     <div class="project-grid project-listing">{projects.map((project,i)=><a class="project-card" href={`/projects/${project.slug}/`}>
-      <div class="card-head"><span class="card-index">{String(i+1).padStart(2,'0')} / {project.kind==='study'?'SOURCE STUDY':'PROJECT'}</span><span class="status-pill">{project.status}</span></div>
+      <div class="card-head"><span class="card-index">{String(i+1).padStart(2,'0')} / {project.kind==='study'?'源码研究':'原创项目'}</span><span class="status-pill">{project.status}</span></div>
       <div class="project-glyph" aria-hidden="true">{['⌘','⌁','⟡','⧉'][i % 4]}</div>
       <div class="project-category">{project.category}</div><h3>{project.name}</h3><p>{project.summary}</p>
       <div class="stack-list">{project.stack.slice(0,3).map(tag=><span>{tag}</span>)}</div><span class="card-arrow">↗</span>

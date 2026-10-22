@@ -90,12 +90,14 @@ test('cyberpunk home FX can be toggled and persists across navigation', async ({
 test('home runtime is explicitly simulated, and displays browser-local time', async ({page})=>{
   await page.setViewportSize({width:390,height:780});
   await page.goto('/');
-  await expect(page.getByText('STATUS : SIMULATED')).toBeVisible();
+  await expect(page.getByText('工程流程示例')).toBeVisible();
   await expect(page.getByText('RUN_ID : DEMO-001')).toHaveCount(0);
   await expect(page.getByText('本地演示 · 无实时服务器连接')).toHaveCount(0);
+  await expect(page.getByText('INDEPENDENT ENGINEERING JOURNAL')).toHaveCount(0);
+  await expect(page.locator('.night-city-signal')).toHaveCount(0);
   await expect(page.locator('.site-footer a[href="/rss.xml"]')).toHaveCount(0);
   await expect(page.locator('#cyber-runtime-lines > div')).toHaveCount(6);
-  await expect(page.locator('#hud-local-clock')).toHaveText(/^[0-2][0-9]:[0-5][0-9]$/);
+  await expect(page.locator('.hero-telemetry')).toHaveCount(0);
   await expect(page.locator('h1')).toBeVisible();
   const palette = await page.locator('html').evaluate(el=>getComputedStyle(el).getPropertyValue('--neon-primary').trim());
   expect(palette).toBe('#50ddff');
@@ -169,5 +171,18 @@ test('night-city palette and original skyline are present',async ({page})=>{
   }));
   expect(cssValues.main).toBe('#50ddff');
   expect(cssValues.secondary).toBe('#ff4fab');
-  await expect(page.locator('.hero-telemetry')).toContainText('JYC-NIGHT');
+  await expect(page.locator('.hero-telemetry')).toHaveCount(0);
+});
+
+test('Chinese home and navigation do not show decorative English fragments', async ({page}) => {
+  await page.setViewportSize({width:375,height:780});
+  await page.goto('/');
+  await expect(page.locator('h1')).toContainText('让代码成为证据');
+  await expect(page.getByRole('button',{name:'切换动态视觉特效'})).toContainText('动效');
+  for(const str of ['Selected Projects','Field Notes','LEARNING PATHS','TECH WATCH','SYSTEM READY','JYC / NETWORK','INDEPENDENT ENGINEERING JOURNAL']) {
+    await expect(page.getByText(str,{exact:false})).toHaveCount(0);
+  }
+  await page.goto('/blog/');
+  await expect(page.locator('.listing-meta')).toContainText('篇文章');
+  await expect(page.locator('.listing-meta a[href="/rss.xml"]')).toHaveCount(0);
 });

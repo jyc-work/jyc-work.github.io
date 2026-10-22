@@ -16,7 +16,7 @@ const related=(await getCollection('commands')).filter(item=>item.id!==entry.id&
   <div class="container command-reader-grid">
     <article class="command-article">
       <div class="breadcrumbs"><a href="/">首页</a><span>/</span><a href="/commands/">命令手册</a><span>/</span><span>{entry.data.category}</span></div>
-      <div class="page-eyebrow">COMMAND HANDBOOK / {entry.data.category}</div>
+      <div class="page-eyebrow">命令手册 · {entry.data.category}</div>
       <h1>{entry.data.title}</h1>
       <p class="command-intro">{entry.data.description}</p>
       <div class="command-meta"><span>更新：{entry.data.updated.toISOString().slice(0,10)}</span><span>需要核对实际版本与执行权限</span></div>
@@ -29,11 +29,11 @@ const related=(await getCollection('commands')).filter(item=>item.id!==entry.id&
       </div>
     </article>
     <aside class="command-aside" aria-label="本页导航与相关专题">
-      <div class="toc-title">ON THIS PAGE</div>
+      <div class="toc-title">本文目录</div>
       {headings.filter(h=>h.depth===2||h.depth===3).map(h=>
         <a class:list={['toc-item',{'toc-nested':h.depth===3}]} href={`#${h.slug}`}>{h.text}</a>)}
       {related.length>0&&<div class="command-related">
-        <div class="toc-title">RELATED</div>
+        <div class="toc-title">相关专题</div>
         {related.map(item=><a href={`/commands/${item.id}/`}>{item.data.title} ↗</a>)}
       </div>}
     </aside>
