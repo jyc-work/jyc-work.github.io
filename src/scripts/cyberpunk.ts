@@ -1,12 +1,12 @@
 /* JYC visual simulation: decorative client-side behavior, no live infrastructure metrics. */
 type TerminalEvent = { kind: string; detail: string; state: string };
 const events: TerminalEvent[] = [
-  {kind:'BOOT', detail:'initialize engineering_hub', state:'SIM'},
-  {kind:'INDEX', detail:'load knowledge and learning paths', state:'OK'},
-  {kind:'TOOLS', detail:'render local interface layers', state:'OK'},
-  {kind:'TRACE', detail:'simulate evidence event sequence', state:'SIM'},
-  {kind:'AGENT', detail:'tool loop schematic ready', state:'SIM'},
-  {kind:'SYSTEM', detail:'awaiting user navigation', state:'READY'}
+  {kind:'启动', detail:'初始化演示流程', state:'模拟'},
+  {kind:'索引', detail:'读取文章与学习路线', state:'完成'},
+  {kind:'工具', detail:'加载工具列表', state:'完成'},
+  {kind:'事件', detail:'记录模拟执行步骤', state:'模拟'},
+  {kind:'Agent', detail:'准备工具调用流程', state:'模拟'},
+  {kind:'待命', detail:'等待页面操作', state:'就绪'}
 ];
 const root = document.documentElement;
 const fxButton = document.querySelector<HTMLButtonElement>('.fx-switch');
@@ -61,7 +61,7 @@ function setFX(enabled:boolean, persist=false) {
   root.classList.toggle('fx-off',!fxEnabled);
   if(fxButton) {
     fxButton.setAttribute('aria-pressed',String(fxEnabled));
-    fxButton.textContent='FX / '+(fxEnabled?'ON':'OFF');
+    fxButton.textContent='动效：'+(fxEnabled?'开':'关');
     fxButton.title=fxEnabled?'关闭视觉特效':'开启视觉特效';
   }
   if(persist) safeSet(enabled?'on':'off');
