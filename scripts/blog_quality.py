@@ -8,10 +8,11 @@ import re
 import sys
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
-CONTENT = ROOT / "src" / "content" / "blog"
+CONTENT_DIRS = (ROOT / "src" / "content" / "blog", ROOT / "src" / "content" / "blog-en")
 SHA = re.compile(r"^[0-9a-f]{40}$")
 FIELDS = ("title", "description", "date", "kind", "verification", "repository", "revision")
-HEADINGS = ("问题", "环境", "设计", "复现", "验证", "局限")
+HEADINGS_ZH = ("问题", "环境", "设计", "复现", "验证", "局限")
+HEADINGS_EN = ("Problem", "Environment", "Design", "Reproduction", "Verification", "Limitations")
 
 
 def frontmatter(text: str) -> tuple[str, str]:
@@ -62,8 +63,9 @@ def check_document(text: str, path: str = "<document>") -> list[str]:
         issues.append(f"{path}: at least five technical sections expected")
     if body.count("~~~") < 4:
         issues.append(f"{path}: at least two fenced configuration/code blocks expected")
-    for heading in HEADINGS:
-        if not any(heading in line for line in re.findall(r"(?m)^## .+$", body)):
+    heading_set = HEADINGS_EN if "/blog-en/" in ("/" + path.replace("\\\\", "/")) else HEADINGS_ZH
+    for heading in heading_set:
+        if not any(heading.lower() in line.lower() for line in re.findall(r"(?m)^## .+$", body)):
             issues.append(f"{path}: missing section covering {heading}")
     if not re.search(r"(?m)^date:\s*\d{4}-\d\d-\d\d", meta):
         issues.append(f"{path}: date must be YYYY-MM-DD")
@@ -72,15 +74,16 @@ def check_document(text: str, path: str = "<document>") -> list[str]:
 
 def main() -> int:
     errors, public = [], 0
-    for file in sorted(CONTENT.glob("*.md")):
-        content = file.read_text(encoding="utf-8")
-        errors.extend(check_document(content, str(file.relative_to(ROOT))))
-        try:
-            meta, _ = frontmatter(content)
-            if scalar(meta, "draft").lower() != "true":
-                public += 1
-        except ValueError:
-            pass
+    for directory in CONTENT_DIRS:
+        for file in sorted(directory.rglob("*.md")):
+            content = file.read_text(encoding="utf-8")
+            errors.extend(check_document(content, str(file.relative_to(ROOT))))
+            try:
+                meta, _ = frontmatter(content)
+                if scalar(meta, "draft").lower() != "true":
+                    public += 1
+            except ValueError:
+                pass
     if not public:
         errors.append("blog: no public engineering posts")
     for issue in errors:
