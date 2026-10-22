@@ -53,7 +53,7 @@ import '../styles/mobile.css';
     </div>
     <script>
       const english = window.location.pathname.startsWith('/en/');
-      const setHidden = (selector, hidden) => {
+      const setHidden = (selector: string, hidden: boolean) => {
         const element = document.querySelector(selector);
         if (element) element.hidden = hidden;
       };
