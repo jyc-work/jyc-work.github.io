@@ -24,6 +24,8 @@ jobs:
           node-version: '22'
       - name: Install dependencies
         run: npm install --no-fund --no-audit
+      - name: Enforce public engineering article quality gate
+        run: python3 scripts/blog_quality.py
       - name: Typecheck and generate static site
         run: npm run build
       - name: Validate technology tracker
