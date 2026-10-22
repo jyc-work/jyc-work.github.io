@@ -173,3 +173,16 @@ test('night-city palette and original skyline are present',async ({page})=>{
   expect(cssValues.secondary).toBe('#ff4fab');
   await expect(page.locator('.hero-telemetry')).toContainText('JYC-NIGHT');
 });
+
+test('Chinese home and navigation do not show decorative English fragments', async ({page}) => {
+  await page.setViewportSize({width:375,height:780});
+  await page.goto('/');
+  await expect(page.locator('h1')).toContainText('让代码成为证据');
+  await expect(page.getByRole('button',{name:'切换动态视觉特效'})).toContainText('动效');
+  for(const str of ['Selected Projects','Field Notes','LEARNING PATHS','TECH WATCH','SYSTEM READY','JYC / NETWORK','INDEPENDENT ENGINEERING JOURNAL']) {
+    await expect(page.getByText(str,{exact:false})).toHaveCount(0);
+  }
+  await page.goto('/blog/');
+  await expect(page.locator('.listing-meta')).toContainText('篇文章');
+  await expect(page.locator('.listing-meta a[href="/rss.xml"]')).toHaveCount(0);
+});
