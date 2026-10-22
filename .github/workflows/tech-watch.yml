@@ -48,6 +48,15 @@ jobs:
         run: |
           python -m unittest discover -s scripts/tests -v
           python scripts/tech_watch.py
+      - uses: actions/setup-node@v4
+        if: env.SKIP_WATCH != 'true'
+        with:
+          node-version: '22'
+      - name: Validate generated public site
+        if: env.SKIP_WATCH != 'true'
+        run: |
+          npm install --no-fund --no-audit
+          npm run build
       - name: Open review-only PR
         if: env.SKIP_WATCH != 'true'
         env:
