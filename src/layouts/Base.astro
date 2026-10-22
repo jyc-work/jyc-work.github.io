@@ -13,7 +13,7 @@ interface Props {
 }
 const {
   title = 'JYC Engineering Lab',
-  description = 'Agent Engineering · Java Backend · Data Engineering · Full-Stack · Software Architecture'
+  description = 'JYC 技术博客：Agent 工程、Java 后端、数据工程、全栈开发和工程实践'
 } = Astro.props;
 const current = Astro.url.pathname;
 const canonical = new URL(Astro.url.pathname, Astro.site).toString();
@@ -49,7 +49,7 @@ const links = [
         <div class="header-inner container">
           <a class="brand" href="/" aria-label="JYC Engineering Lab 首页">
             <span class="brand-mark" aria-hidden="true">J<span class="brand-dot">.</span></span>
-            <span class="brand-copy"><strong>JYC</strong><small>ENGINEERING LAB</small></span>
+            <span class="brand-copy"><strong>JYC</strong><small>技术实验室</small></span>
           </a>
           <nav id="primary-navigation" class="site-nav" aria-label="主导航">
             {links.map((link) => (
@@ -71,7 +71,7 @@ const links = [
       <footer class="site-footer">
         <div class="container footer-inner">
           <div>
-            <strong>JYC <span class="accent">/</span> ENGINEERING LAB</strong>
+            <strong>JYC 技术实验室</strong>
             <p>记录可解释的工程决策，分享可验证的技术成果。</p>
           </div>
           <div class="footer-links">
@@ -80,7 +80,7 @@ const links = [
             <a href="/commands/">命令手册</a>
             <a href="/knowledge/agent-patterns/">来源与引用</a>
           </div>
-          <span class="copyright">© {new Date().getFullYear()} JYC · Built with Astro</span>
+          <span class="copyright">© {new Date().getFullYear()} JYC</span>
         </div>
       </footer>
     </div>
