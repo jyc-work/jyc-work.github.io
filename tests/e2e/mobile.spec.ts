@@ -201,7 +201,8 @@ test('Chinese and English home are reciprocal with canonical language metadata',
   await expect(page.getByRole('navigation',{name:'Main navigation'})).toBeVisible();
   await page.keyboard.press('Escape');
   await expect(page.getByRole('navigation',{name:'Main navigation'})).toBeHidden();
-  await page.getByRole('link',{name:'阅读中文版'}).click();
+  await expect(page.locator('link[type="application/rss+xml"]')).toHaveAttribute('title','JYC Technical Blog RSS');
+  await page.getByRole('link',{name:'Read in Chinese'}).click();
   await expect(page).toHaveURL(/\/$/);
   await expect(page.locator('html')).toHaveAttribute('lang','zh-CN');
 });
@@ -222,7 +223,7 @@ test('English articles have public evidence, localized TOC, working copy, and re
   const copy=page.getByRole('button',{name:'Copy code'}).first();
   await copy.click();
   await expect(copy).toHaveText('Copied');
-  await page.getByRole('link',{name:'阅读中文版'}).click();
+  await page.getByRole('link',{name:'Read in Chinese'}).click();
   await expect(page).toHaveURL(/\/blog\/(astro-pages-engineering-case|playwright-mobile-regression)\/$/);
   await expect(page.locator('html')).toHaveAttribute('lang','zh-CN');
 });
@@ -244,6 +245,6 @@ test('No misleading English version switch on untranslated Chinese pages',async(
   await page.goto('/learning/');
   await expect(page.locator('.lang-switch')).toHaveCount(0);
   await page.goto('/en/projects/jyc-engineering-lab/');
-  await expect(page.getByRole('link',{name:'阅读中文版'})).toHaveAttribute('href','/projects/jyc-engineering-lab/');
+  await expect(page.getByRole('link',{name:'Read in Chinese'})).toHaveAttribute('href','/projects/jyc-engineering-lab/');
   await expect(page.getByRole('navigation',{name:'Main navigation'})).toBeVisible();
 });
