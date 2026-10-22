@@ -54,7 +54,7 @@ import '../styles/mobile.css';
     <script>
       const english = window.location.pathname.startsWith('/en/');
       const setHidden = (selector: string, hidden: boolean) => {
-        const element = document.querySelector(selector);
+        const element = document.querySelector<HTMLElement>(selector);
         if (element) element.hidden = hidden;
       };
       document.documentElement.lang = english ? 'en' : 'zh-CN';
