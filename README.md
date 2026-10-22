@@ -66,11 +66,11 @@ Browse `/commands/` for Linux, Docker, Kubernetes, containerd, Hadoop, Git, Kafk
 - Automated Chromium checks at 320, 375, 390 and 430px viewports, including menu, article controls and overflow
 - Run `npm run build && npx playwright install chromium && npm run test:e2e` locally
 
-## Cyberpunk-inspired interactive interface
+## Night Circuit: cyberpunk-inspired interactive interface
 
 The original JYC neon district theme is inspired by cyberpunk visual design; it uses no game logos, copied UI assets or protected character artwork. The site remains static-hosted on GitHub Pages.
 
-- Responsive neon yellow / near-black theme, cyan and magenta accent elements, angular panels and cards
+- Responsive midnight-blue / electric-cyan / violet / magenta neon-noir theme, angular panels and cards
 - Simulated runtime terminal events are decorative, explicitly labeled DEMO, and never represent production telemetry
 - FX switch controls the decorative glitch/scanline and terminal animation, persisted locally when storage is available
 - OS reduced-motion preference always wins; the terminal falls back to a static list
@@ -85,3 +85,7 @@ The original JYC neon district theme is inspired by cyberpunk visual design; it 
 - `/updates/` groups reviewed upstream GitHub change metadata by observed date, links to original commits, and clearly separates model summaries from independently verified technical outcomes.
 - JYC website's public commit history can be fetched on demand from the GitHub public API. No API key is exposed or required.
 - Financial or quantitative trading content is not part of this site.
+
+### Night Circuit visual correction
+
+Following feedback that bright yellow resembled promotional artwork rather than a futuristic city at night, the original JYC site now uses midnight blue, electric cyan, violet atmosphere, and magenta signage. The local `public/night-city-skyline.svg` is original vector decoration, not game art. Learning progress, GitHub update timelines, and mobile controls are preserved.
