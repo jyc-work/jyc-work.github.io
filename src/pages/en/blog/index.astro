@@ -1,0 +1,19 @@
+---
+import Base from '../../../layouts/Base.astro';
+import { getCollection } from 'astro:content';
+const posts = (await getCollection('blogEn', ({ data }) => !data.draft)).sort((a,b) => b.data.date.getTime() - a.data.date.getTime());
+---
+<Base locale="en" title="Engineering Articles" description="Source-backed engineering case studies on CI/CD, frontend testing, Agent systems, and data engineering." alternatePath="/blog/">
+  <div class="container listing-page">
+    <h1>Engineering articles<span class="accent">.</span></h1>
+    <p class="page-lead">Technical case studies with pinned source revisions, direct evidence, reproducible steps, and explicit limitations.</p>
+    <div class="listing-meta"><span>{posts.length} articles</span></div>
+    <div class="article-list">{posts.map((post, i) => (
+      <a class="article-row" href={`/en/blog/${post.id}/`}>
+        <span class="article-index">{String(i+1).padStart(2,'0')}</span>
+        <div class="article-row-main"><h3>{post.data.title}</h3><p>{post.data.description}</p><div class="tags">{post.data.tags.map((tag)=><span>{tag}</span>)}</div></div>
+        <span class="article-date">{post.data.date.toISOString().slice(0,10)}</span><span class="article-go">↗</span>
+      </a>
+    ))}</div>
+  </div>
+</Base>
