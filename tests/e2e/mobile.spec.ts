@@ -106,3 +106,49 @@ test('cyberpunk visual FX respects reduced-motion OS preference',async ({page})=
   await expect(page.locator('html')).toHaveClass(/fx-off/);
   await expect(page.locator('#cyber-runtime-lines > div')).toHaveCount(6);
 });
+
+
+test('learning progress self-check persists across refresh and dashboard updates',async({page})=>{
+  await page.setViewportSize({width:375,height:780});
+  await page.goto('/learning/');
+  await expect(page.locator('#learning-progress-total')).toHaveText('0 / 20');
+  await page.goto('/learning/agent-engineering/');
+  const checkbox=page.getByRole('checkbox',{name:'标记阶段 01完成'});
+  await checkbox.check();
+  await expect(page.locator('.learning-progress-panel [data-progress-label]')).toHaveText('1 / 4 阶段');
+  await page.reload();
+  await expect(checkbox).toBeChecked();
+  await page.goto('/learning/');
+  await expect(page.locator('#learning-progress-total')).toHaveText('1 / 20');
+  await expect(page.locator('[data-progress-slug="agent-engineering"] [data-progress-label]')).toHaveText('1 / 4 阶段');
+});
+
+test('learning progress backup import updates aggregate while excluding unknown tracks',async({page})=>{
+  await page.setViewportSize({width:390,height:780});
+  await page.goto('/learning/');
+  await page.locator('#learning-import').setInputFiles({
+    name:'backup.json',mimeType:'application/json',
+    buffer:Buffer.from(JSON.stringify({version:1,progress:{'java-backend':[0,2],'unknown-track':[0,1,2]}}))
+  });
+  await expect(page.locator('#learning-progress-total')).toHaveText('2 / 20');
+  await expect(page.locator('#learning-storage-status')).toContainText('已从备份导入');
+  await page.goto('/learning/java-backend/');
+  await expect(page.getByRole('checkbox',{name:'标记阶段 01完成'})).toBeChecked();
+  await expect(page.getByRole('checkbox',{name:'标记阶段 03完成'})).toBeChecked();
+  await expect(page.getByRole('checkbox',{name:'标记阶段 02完成'})).not.toBeChecked();
+});
+
+test('technology timeline clearly distinguishes empty upstream history from live public commits',async({page})=>{
+  await page.setViewportSize({width:430,height:780});
+  await page.route('https://api.github.com/repos/jyc-work/jyc-work.github.io/commits?per_page=5',async route=>{
+    const sha='c'.repeat(40);
+    await route.fulfill({status:200,contentType:'application/json',body:JSON.stringify([
+      {sha,html_url:`https://github.com/jyc-work/jyc-work.github.io/commit/${sha}`,commit:{message:'docs: improve engineering knowledge base',committer:{date:'2026-10-22T09:00:00Z'}}}
+    ])});
+  });
+  await page.goto('/updates/');
+  await expect(page.getByText('尚无已发布的上游变化记录')).toBeVisible();
+  await page.getByRole('button',{name:'获取最新公开提交'}).click();
+  await expect(page.locator('#site-commits')).toContainText('docs: improve engineering knowledge base');
+  await expect(page.locator('#site-commits a')).toHaveAttribute('href',/github.com\/jyc-work\/jyc-work.github.io\/commit\//);
+});

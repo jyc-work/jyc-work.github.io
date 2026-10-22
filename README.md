@@ -76,3 +76,12 @@ The original JYC neon district theme is inspired by cyberpunk visual design; it 
 - OS reduced-motion preference always wins; the terminal falls back to a static list
 - Local HUD clock displays the browser's local time; repository update feed is CI-driven and reviewed, not a live data stream
 - Original mobile navigation, content, search, RSS and keyboard controls remain intact
+
+## Interactive learning progress & source-backed technology timeline
+
+- Each learning track has four self-check stages. Mark a stage complete only after independently completing the work and reviewing the acceptance criteria. This is **self-assessment**, not an automated certification.
+- Your checkboxes are stored in browser `localStorage` only (`jyc.learning.progress.v1`); no account, server submission, or tracking is used.
+- At `/learning/` you can export the progress to a JSON file and import it on another browser or device. Do not upload a file from an untrusted source.
+- `/updates/` groups reviewed upstream GitHub change metadata by observed date, links to original commits, and clearly separates model summaries from independently verified technical outcomes.
+- JYC website's public commit history can be fetched on demand from the GitHub public API. No API key is exposed or required.
+- Financial or quantitative trading content is not part of this site.
