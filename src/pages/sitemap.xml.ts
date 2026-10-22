@@ -1,0 +1,19 @@
+import { getCollection } from 'astro:content';
+import { projects } from '../data/projects';
+export async function GET() {
+  const [posts, notes] = await Promise.all([
+    getCollection('blog', ({data})=>!data.draft),
+    getCollection('knowledge', ({data})=>!data.draft)
+  ]);
+  const links = [
+    '/', '/blog/', '/projects/', '/knowledge/', '/search/',
+    ...posts.map(x=>`/blog/${x.id}/`),
+    ...notes.map(x=>`/knowledge/${x.id}/`),
+    ...projects.map(x=>`/projects/${x.slug}/`)
+  ];
+  const xml = '<?xml version="1.0" encoding="UTF-8"?>' +
+    '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' +
+    links.map(link=>`<url><loc>https://jyc-work.github.io${link}</loc></url>`).join('') +
+    '</urlset>';
+  return new Response(xml,{headers:{'Content-Type':'application/xml; charset=utf-8'}});
+}

@@ -1,0 +1,46 @@
+---
+import Base from '../layouts/Base.astro';
+---
+<Base title="搜索" description="搜索工程文章和公开知识笔记">
+  <div class="container listing-page search-page">
+    <div class="page-eyebrow">INDEX / QUERY</div><h1>搜索知识库<span class="accent">.</span></h1><p class="page-lead">在公开文章标题、摘要和标签中搜索。无第三方跟踪服务。</p>
+    <label class="search-label" for="search-input">搜索关键词</label>
+    <input id="search-input" class="search-input" type="search" placeholder="例如 Agent Loop、Harness、幂等、Flink…" autocomplete="off" autofocus />
+    <div id="search-status" role="status" aria-live="polite">输入关键词开始搜索。</div>
+    <div id="search-results" class="article-list"></div>
+  </div>
+  <script>
+    const input = document.querySelector<HTMLInputElement>('#search-input');
+    const results = document.querySelector<HTMLElement>('#search-results');
+    const status = document.querySelector<HTMLElement>('#search-status');
+    type Item = { type: string; title: string; description: string; url: string; tags: string[] };
+    let items: Item[] = [];
+    try {
+      const response = await fetch('/search-index.json');
+      if (!response.ok) throw new Error('index unavailable');
+      items = await response.json() as Item[];
+    } catch {
+      if (status) status.textContent = '暂时无法加载索引，请稍后重试。';
+    }
+    function search(query: string) {
+      if (!results || !status) return;
+      results.replaceChildren();
+      if (!query.trim()) {status.textContent='输入关键词开始搜索。';return;}
+      const q=query.trim().toLocaleLowerCase();
+      const matched=items.filter(x=>[x.title,x.description,...x.tags].join(' ').toLocaleLowerCase().includes(q));
+      status.textContent = `找到 ${matched.length} 条结果（标题、摘要与标签匹配）。`;
+      matched.forEach((item)=>{
+        const a=document.createElement('a');a.className='article-row';a.href=item.url;
+        const badge=document.createElement('span');badge.className='article-index';badge.textContent=item.type;
+        const body=document.createElement('div');body.className='article-row-main';
+        const h=document.createElement('h3');h.textContent=item.title;
+        const p=document.createElement('p');p.textContent=item.description;
+        body.append(h,p);a.append(badge,body);results.append(a);
+      });
+    }
+    input?.addEventListener('input', ()=>search(input.value));
+    const params=new URLSearchParams(window.location.search);
+    const initial=params.get('q');
+    if(input && initial){input.value=initial;search(initial);}
+  </script>
+</Base>

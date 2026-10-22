@@ -1,0 +1,85 @@
+---
+import Base from '../layouts/Base.astro';
+import { getCollection } from 'astro:content';
+import { projects } from '../data/projects';
+
+const posts = (await getCollection('blog', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime()).slice(0, 3);
+const featured = projects.slice(0, 3);
+---
+<Base>
+  <section class="hero container">
+    <div class="hero-copy">
+      <div class="eyebrow"><span class="signal"></span> INDEPENDENT ENGINEERING JOURNAL <span class="eyebrow-number">/ 001</span></div>
+      <h1>Build with evidence.<br /><span class="gradient-text">Think in systems.</span></h1>
+      <p class="hero-zh">让每一项技术结论，都有代码、实验或清晰的证据边界。</p>
+      <p class="hero-desc">围绕 <strong>Agent Engineering</strong>、数据系统、全栈开发与研究工程，持续记录设计取舍、踩坑过程和可复现的技术实验。</p>
+      <div class="hero-actions">
+        <a class="btn primary" href="/projects/">探索项目 <span aria-hidden="true">↗</span></a>
+        <a class="btn secondary" href="/blog/">阅读文章 <span aria-hidden="true">→</span></a>
+      </div>
+      <div class="hero-meta">
+        <span><span class="tiny-square"></span> SOURCE FIRST</span>
+        <span><span class="tiny-square"></span> TEST DRIVEN</span>
+        <span><span class="tiny-square"></span> OPEN KNOWLEDGE</span>
+      </div>
+    </div>
+    <div class="hero-visual" aria-label="工程运行时事件流可视化">
+      <div class="orb orb-a"></div><div class="orb orb-b"></div>
+      <div class="orbit orbit-one"></div><div class="orbit orbit-two"></div>
+      <div class="terminal-card">
+        <div class="terminal-top"><span class="terminal-dots"><i></i><i></i><i></i></span><span>runtime / trace.log</span><span class="terminal-state">● SYSTEM READY</span></div>
+        <div class="terminal-body" aria-hidden="true">
+          <div><span class="line-number">01</span><span class="prompt-char">➜</span> <span class="muted">initialize</span> <span class="syntax-light">agent_runtime</span></div>
+          <div><span class="line-number">02</span><span class="muted">[OK]</span> tool registry loaded</div>
+          <div><span class="line-number">03</span><span class="muted">[OK]</span> policy gate enabled</div>
+          <div><span class="line-number">04</span><span class="syntax-blue">EVENT</span> <span class="muted">{ '{' }</span> type: <span class="syntax-yellow">"tool.call"</span> <span class="muted">{ '}' }</span></div>
+          <div><span class="line-number">05</span><span class="syntax-blue">TRACE</span> evidence validated</div>
+          <div><span class="line-number">06</span><span class="syntax-light">→ checkpoint saved</span> <span class="cursor">▍</span></div>
+        </div>
+        <div class="terminal-bottom"><span>RUN_ID : DEMO-001</span><span>STATUS : SIMULATED</span></div>
+      </div>
+      <div class="visual-label label-one">MODEL / TOOL / STATE</div><div class="visual-label label-two">OBSERVE → DECIDE → ACT</div>
+    </div>
+  </section>
+
+  <section class="manifest container">
+    <span>研究原则</span>
+    <p>不是堆砌名词的技术博客。<strong>问题 → 假设 → 实现 → 验证 → 边界</strong>，才是值得保留的工程记录。</p>
+  </section>
+
+  <section class="section container">
+    <div class="section-heading"><div><div class="section-kicker">01 / WORK</div><h2>Selected Projects<span class="accent">.</span></h2><p>从项目功能走向可追溯的设计与测试证据。</p></div><a class="text-link" href="/projects/">全部项目 <span>↗</span></a></div>
+    <div class="project-grid">
+      {featured.map((project, index) => (
+        <a class="project-card" href={`/projects/${project.slug}/`}>
+          <div class="card-head"><span class="card-index">0{index + 1} / PROJECT</span><span class="status-pill">{project.status}</span></div>
+          <div class="project-glyph" aria-hidden="true">{index === 0 ? '⌘' : index === 1 ? '⌁' : '⟡'}</div>
+          <div class="project-category">{project.category}</div>
+          <h3>{project.name}</h3>
+          <p>{project.summary}</p>
+          <div class="stack-list">{project.stack.slice(0, 3).map((tag) => <span>{tag}</span>)}</div>
+          <span class="card-arrow" aria-hidden="true">↗</span>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <section class="section section-muted">
+    <div class="container">
+      <div class="section-heading"><div><div class="section-kicker">02 / WRITING</div><h2>Field Notes<span class="accent">.</span></h2><p>从真实问题出发的技术记录。</p></div><a class="text-link" href="/blog/">全部文章 <span>↗</span></a></div>
+      <div class="article-list">
+        {posts.map((post, index) => (
+          <a class="article-row" href={`/blog/${post.id}/`}>
+            <span class="article-index">0{index + 1}</span><div class="article-row-main"><h3>{post.data.title}</h3><p>{post.data.description}</p><div class="tags">{post.data.tags.map((tag) => <span>{tag}</span>)}</div></div><span class="article-date">{post.data.date.toISOString().slice(0, 10)}</span><span class="article-go">↗</span>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="knowledge-banner container">
+    <div><div class="section-kicker">03 / KNOWLEDGE SYSTEM</div><h2>Notes into knowledge.<br /><span class="gradient-text">Knowledge into practice.</span></h2><p>概念、源码位置、实验与参考资料一处归档。优先链接原始来源，保留原创理解和验证状态。</p><a href="/knowledge/" class="btn secondary">进入知识库 <span>→</span></a></div>
+    <div class="knowledge-wire" aria-hidden="true"><span>PERCEPTION</span><span>REASONING</span><span>TOOL LOOP</span><span>HARNESS</span><span>GOVERNANCE</span><span>EVALUATION</span></div>
+  </section>
+</Base>
