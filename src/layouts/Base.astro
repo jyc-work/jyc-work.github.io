@@ -12,7 +12,7 @@ interface Props {
   description?: string;
 }
 const {
-  title = 'JYC Engineering Lab',
+  title = 'JYC 技术实验室',
   description = 'JYC 技术博客：Agent 工程、Java 后端、数据工程、全栈开发和工程实践'
 } = Astro.props;
 const current = Astro.url.pathname;
@@ -39,8 +39,8 @@ const links = [
     <meta property="og:type" content="website" />
     <link rel="canonical" href={canonical} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="alternate" type="application/rss+xml" title="JYC Engineering Lab RSS" href="/rss.xml" />
-    <title>{title === 'JYC Engineering Lab' ? title : `${title} · JYC Engineering Lab`}</title>
+    <link rel="alternate" type="application/rss+xml" title="JYC 技术博客 RSS" href="/rss.xml" />
+    <title>{title === 'JYC 技术实验室' ? title : `${title} · JYC 技术实验室`}</title>
   </head>
   <body>
     <a class="skip-link" href="#content">跳到正文</a>
