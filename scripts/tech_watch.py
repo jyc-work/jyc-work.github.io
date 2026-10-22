@@ -186,6 +186,11 @@ def check(allow_paid: bool | None = None) -> dict:
             new_state[change["repository"]] = previous[change["repository"]]
         changes = changes[:MAX_CHANGES]
 
+    # Do not generate an empty daily PR when every upstream HEAD is unchanged.
+    if new_state == previous and not changes:
+        print(f"Checked {successful}/{len(source_list)} repositories: no changes.")
+        return {"checked": successful, "changes": 0, "providers": 0}
+
     providers = provider_candidates(allow_paid)
     if not providers:
         print("No eligible AI providers: deterministic source-only tracking remains active.")
