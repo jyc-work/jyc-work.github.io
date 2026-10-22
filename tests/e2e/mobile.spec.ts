@@ -42,7 +42,7 @@ test('desktop navigation stays visible with mobile toggle hidden',async ({page})
 test('article toc, code copy and back-to-top work on small mobile viewport', async ({page,context})=>{
   await context.grantPermissions(['clipboard-read','clipboard-write']);
   await page.setViewportSize({width: 320, height: 680});
-  await page.goto('/blog/agent-loop-reliability/');
+  await page.goto('/blog/astro-pages-engineering-case/');
   const toc = page.locator('.mobile-reading-toc');
   await expect(toc).toBeVisible();
   await toc.locator('summary').click();
@@ -91,6 +91,9 @@ test('home runtime is explicitly simulated, and displays browser-local time', as
   await page.setViewportSize({width:390,height:780});
   await page.goto('/');
   await expect(page.getByText('STATUS : SIMULATED')).toBeVisible();
+  await expect(page.getByText('RUN_ID : DEMO-001')).toHaveCount(0);
+  await expect(page.getByText('本地演示 · 无实时服务器连接')).toHaveCount(0);
+  await expect(page.locator('.site-footer a[href="/rss.xml"]')).toHaveCount(0);
   await expect(page.locator('#cyber-runtime-lines > div')).toHaveCount(6);
   await expect(page.locator('#hud-local-clock')).toHaveText(/^[0-2][0-9]:[0-5][0-9]$/);
   await expect(page.locator('h1')).toBeVisible();

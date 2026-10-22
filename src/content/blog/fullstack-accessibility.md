@@ -2,6 +2,7 @@
 title: "科技感前端不等于大量动画：一套可交付的 UI 验收规则"
 description: "设计炫酷网站时兼顾响应式、对比度、键盘操作、减少动画以及首次加载性能。"
 date: 2026-10-22
+draft: true
 tags: ["Frontend", "CSS", "Accessibility"]
 ---
 

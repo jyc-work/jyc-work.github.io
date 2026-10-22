@@ -2,6 +2,7 @@
 title: "Spring Boot 接口幂等：为什么重试不能只依赖前端"
 description: "围绕超时与重复请求，说明数据库约束、幂等键、事务以及外部服务回执各自解决的问题。"
 date: 2026-10-22
+draft: true
 tags: ["Java", "Spring Boot", "Reliability"]
 ---
 

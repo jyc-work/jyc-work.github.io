@@ -2,6 +2,7 @@
 title: "Agent 事件流与异常恢复：从 Tool Call 到 Checkpoint"
 description: "把可重放事件、幂等键、权限审批与崩溃窗口纳入 Agent 工程，而不仅是保存聊天历史。"
 date: 2026-10-22
+draft: true
 tags: ["Agent", "Event Stream", "Reliability"]
 ---
 

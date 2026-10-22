@@ -2,6 +2,7 @@
 title: "Kafka Consumer 故障诊断：如何建立证据链"
 description: "从消费延迟、分区分配、实例存活及处理耗时出发，避免只依据单一 Lag 指标作结论。"
 date: 2026-10-22
+draft: true
 tags: ["Kafka", "Observability", "Data Engineering"]
 ---
 

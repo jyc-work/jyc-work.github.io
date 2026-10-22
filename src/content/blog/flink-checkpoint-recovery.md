@@ -2,6 +2,7 @@
 title: "Flink Checkpoint、背压与恢复：三个容易混淆的问题"
 description: "解释背压、Checkpoint 和端到端处理保证之间的边界，并提出可复现的流处理故障实验。"
 date: 2026-10-22
+draft: true
 tags: ["Flink", "Checkpoint", "Streaming"]
 ---
 

@@ -17,6 +17,7 @@ const { Content, headings } = await render(entry);
       <div class="page-eyebrow">FIELD NOTE / {entry.data.date.toISOString().slice(0,10)}</div>
       <h1>{entry.data.title}</h1><p class="article-intro">{entry.data.description}</p>
       <div class="tags article-tags">{entry.data.tags.map((tag) => <span>{tag}</span>)}</div>
+      {entry.data.repository && entry.data.revision && <p class="source-alert">证据等级：{entry.data.verification === "source-reviewed" ? "公开源码核查（非独立运行验证）" : entry.data.verification === "runtime-tested" ? "已执行测试（需查阅运行产物）" : "外部复现记录"} · <a href={`${entry.data.repository}/commit/${entry.data.revision}`} target="_blank" rel="noopener noreferrer">固定版本 {entry.data.revision.slice(0, 10)} ↗</a></p>}
       <ReadingToc headings={headings} />
       <div class="prose"><Content /></div>
       <div class="article-end"><a href="/blog/">← 返回文章列表</a><a href="https://github.com/jyc-work/jyc-work.github.io" target="_blank" rel="noopener noreferrer">发现错误？查看仓库 ↗</a></div>

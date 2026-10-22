@@ -8,7 +8,12 @@ const schema = z.object({
   updated: z.coerce.date().optional(),
   tags: z.array(z.string()).default([]),
   draft: z.boolean().default(false),
-  source: z.string().url().optional()
+  source: z.string().url().optional(),
+  kind: z.enum(['engineering-case','incident-analysis']).optional(),
+  verification: z.enum(['source-reviewed','runtime-tested','externally-reproduced']).optional(),
+  repository: z.string().url().optional(),
+  revision: z.string().regex(/^[0-9a-f]{40}$/).optional(),
+  evidence: z.array(z.string().url()).optional()
 });
 
 const blog = defineCollection({
