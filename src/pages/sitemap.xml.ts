@@ -9,7 +9,7 @@ export async function GET() {
     getCollection('enBlog', ({data})=>!data.draft)
   ]);
   const links = [
-    '/', '/blog/', '/projects/', '/knowledge/', '/search/', '/learning/', '/commands/',
+    '/', '/blog/', '/projects/', '/knowledge/', '/search/', '/learning/', '/commands/', '/updates/',
     '/en/', '/en/articles/', '/en/projects/', '/en/projects/jyc-engineering-lab/',
     ...posts.map(x=>`/blog/${x.id}/`),
     ...englishPosts.map(x=>`/en/articles/${x.id}/`),
