@@ -1,6 +1,6 @@
-# Nomiga Engineering Lab
+# JYC Engineering Lab
 
-Personal technical blog, evidence-based engineering portfolio, and public knowledge base.
+JYC's engineering blog, evidence-based project portfolio, public knowledge base, and curated learning paths.
 
 **Site:** https://jyc-work.github.io/
 
@@ -28,10 +28,11 @@ npm run preview
 - Blog articles: `src/content/blog/*.md`
 - Knowledge notes: `src/content/knowledge/*.md`
 - Project case studies: `src/data/projects.ts`
+- Learning paths and eight curated GitHub resources: `src/data/learning.ts`
 
 Content collections require title, description, date, and optional tags. Add `draft: true` in frontmatter to exclude a document from the public build.
 
-**Safety rule:** Only publish original or appropriately licensed materials. Do not mirror private Notion notes, proprietary code, financial credentials, private logs or third-party copyrighted courses. A project is not publicly reproducible until links to reproducible artifacts are available.
+**Safety rule:** Only publish original or appropriately licensed materials. Do not mirror private Notion notes, proprietary code, credentials, private logs or third-party copyrighted courses. A project is not publicly reproducible until links to reproducible artifacts are available.
 
 ## Deployment
 
@@ -43,6 +44,8 @@ Content collections require title, description, date, and optional tags. Add `dr
 Pull requests run build validation without deploying.
 
 ## Scope
+
+This website is intentionally focused on software engineering, Agent systems, backend, data engineering and full-stack development. Investing and quantitative-trading content is excluded.
 
 This is the first public version. Project pages explicitly state their evidence and limitations; they are not proof of a production deployment or third-party verification.
 

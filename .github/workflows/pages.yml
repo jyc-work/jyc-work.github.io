@@ -26,6 +26,8 @@ jobs:
         run: npm install --no-fund --no-audit
       - name: Typecheck and generate static site
         run: npm run build
+      - name: Validate technology tracker
+        run: python3 -m unittest discover -s scripts/tests -v
       - name: Upload Pages artifact
         if: github.event_name != 'pull_request'
         uses: actions/upload-pages-artifact@v3

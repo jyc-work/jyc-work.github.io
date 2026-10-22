@@ -1,0 +1,26 @@
+---
+import Base from '../../layouts/Base.astro';
+import { learningPaths, type LearningPath } from '../../data/learning';
+export function getStaticPaths(){
+  return learningPaths.map((path)=>({params:{slug:path.slug},props:{path}}));
+}
+const { path }=Astro.props as { path: LearningPath };
+---
+<Base title={path.title} description={path.summary}>
+  <div class="container listing-page">
+    <div class="breadcrumbs"><a href="/">首页</a><span>/</span><a href="/learning/">学习路线</a><span>/</span><span>{path.title}</span></div>
+    <div class="page-eyebrow">LEARNING TRACK / {path.subtitle}</div><h1>{path.title}<span class="accent">.</span></h1><p class="page-lead">{path.summary}</p>
+    <div class="learning-context"><div><span>适合人群</span><p>{path.audience}</p></div><div><span>学习前提</span><p>{path.prerequisite}</p></div></div>
+    <div class="section-heading resources-title"><div><div class="section-kicker">STEPS / PRACTICE FIRST</div><h2>四阶段路线<span class="accent">.</span></h2><p>不设强制时间，每阶段需通过验收后再推进。</p></div></div>
+    <div class="stage-list">{path.stages.map((stage)=><section class="stage-card">
+      <div class="stage-head"><span>{stage.duration}</span><h3>{stage.name}</h3></div>
+      <div class="stage-columns"><div><h4>学习要点</h4><ul>{stage.focus.map(item=><li>{item}</li>)}</ul></div><div><h4>动手交付</h4><p>{stage.deliverable}</p><h4>验收标准</h4><p>{stage.acceptance}</p></div></div>
+    </section>)}</div>
+    <div class="section-heading resources-title"><div><div class="section-kicker">GITHUB / SOURCE CODE</div><h2>对应的开源项目<span class="accent">.</span></h2></div></div>
+    <div class="resource-grid">{path.repositories.map((repo)=><a href={repo.url} class="resource-card" target="_blank" rel="noopener noreferrer">
+      <div class="resource-top"><span>{repo.level}</span><span class="resource-link">↗</span></div><h3>{repo.name}</h3><p>{repo.purpose}</p><div class="resource-task"><strong>动手任务：</strong>{repo.task}</div>
+    </a>)}</div>
+    <div class="learning-outcome"><div class="section-kicker">EXPECTED DELIVERABLE</div><h3>完成本路线后</h3><p>{path.outcome}</p><span>资料、代码与实验记录仅在经过检查后再公开发布。</span></div>
+    <a class="back-link" href="/learning/">← 返回学习路线</a>
+  </div>
+</Base>

@@ -1,13 +1,14 @@
 ---
 import '../styles/global.css';
+import '../styles/updates.css';
 
 interface Props {
   title?: string;
   description?: string;
 }
 const {
-  title = 'Nomiga Engineering Lab',
-  description = 'Agent Engineering · Data Systems · Full-stack · Reproducible Research'
+  title = 'JYC Engineering Lab',
+  description = 'Agent Engineering · Java Backend · Data Engineering · Full-Stack · Software Architecture'
 } = Astro.props;
 const current = Astro.url.pathname;
 const canonical = new URL(Astro.url.pathname, Astro.site).toString();
@@ -15,6 +16,8 @@ const links = [
   { href: '/', label: '首页' },
   { href: '/blog/', label: '技术文章' },
   { href: '/projects/', label: '项目作品' },
+  { href: '/learning/', label: '学习路线' },
+  { href: '/updates/', label: '技术动态' },
   { href: '/knowledge/', label: '知识库' }
 ];
 ---
@@ -30,17 +33,17 @@ const links = [
     <meta property="og:type" content="website" />
     <link rel="canonical" href={canonical} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="alternate" type="application/rss+xml" title="Nomiga Engineering Lab RSS" href="/rss.xml" />
-    <title>{title === 'Nomiga Engineering Lab' ? title : `${title} · Nomiga Engineering Lab`}</title>
+    <link rel="alternate" type="application/rss+xml" title="JYC Engineering Lab RSS" href="/rss.xml" />
+    <title>{title === 'JYC Engineering Lab' ? title : `${title} · JYC Engineering Lab`}</title>
   </head>
   <body>
     <a class="skip-link" href="#content">跳到正文</a>
     <div class="site-shell">
       <header class="site-header">
         <div class="header-inner container">
-          <a class="brand" href="/" aria-label="Nomiga Engineering Lab 首页">
-            <span class="brand-mark" aria-hidden="true">N<span class="brand-dot">.</span></span>
-            <span class="brand-copy"><strong>NOMIGA</strong><small>ENGINEERING LAB</small></span>
+          <a class="brand" href="/" aria-label="JYC Engineering Lab 首页">
+            <span class="brand-mark" aria-hidden="true">J<span class="brand-dot">.</span></span>
+            <span class="brand-copy"><strong>JYC</strong><small>ENGINEERING LAB</small></span>
           </a>
           <nav class="site-nav" aria-label="主导航">
             {links.map((link) => (
@@ -56,15 +59,16 @@ const links = [
       <footer class="site-footer">
         <div class="container footer-inner">
           <div>
-            <strong>NOMIGA <span class="accent">/</span> ENGINEERING LAB</strong>
+            <strong>JYC <span class="accent">/</span> ENGINEERING LAB</strong>
             <p>记录可解释的工程决策，分享可验证的技术成果。</p>
           </div>
           <div class="footer-links">
             <a href="/rss.xml">RSS</a>
             <a href="https://github.com/jyc-work" target="_blank" rel="noopener noreferrer">GitHub ↗</a>
+            <a href="/updates/">技术动态</a>
             <a href="/knowledge/agent-patterns/">来源与引用</a>
           </div>
-          <span class="copyright">© {new Date().getFullYear()} Nomiga · Built with Astro</span>
+          <span class="copyright">© {new Date().getFullYear()} JYC · Built with Astro</span>
         </div>
       </footer>
     </div>

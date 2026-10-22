@@ -1,0 +1,34 @@
+[
+  {
+    "repo": "shareAI-lab/learn-claude-code",
+    "domain": "Agent Engineering"
+  },
+  {
+    "repo": "earendil-works/pi",
+    "domain": "Agent Engineering"
+  },
+  {
+    "repo": "Snailclimb/JavaGuide",
+    "domain": "Java Backend"
+  },
+  {
+    "repo": "spring-projects/spring-boot",
+    "domain": "Java Backend"
+  },
+  {
+    "repo": "apache/kafka",
+    "domain": "Data Engineering"
+  },
+  {
+    "repo": "apache/flink",
+    "domain": "Data Engineering"
+  },
+  {
+    "repo": "fullstack-hy2020/fullstack-hy2020.github.io",
+    "domain": "Full-Stack"
+  },
+  {
+    "repo": "donnemartin/system-design-primer",
+    "domain": "System Design"
+  }
+]
