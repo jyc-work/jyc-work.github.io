@@ -1,0 +1,28 @@
+---
+import Base from '../../../layouts/Base.astro';
+import ReadingToc from '../../../components/ReadingToc.astro';
+import { getCollection, render } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('blogEn', ({ data }) => !data.draft);
+  return entries.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}
+const { entry } = Astro.props as { entry: CollectionEntry<'blogEn'> };
+const { Content, headings } = await render(entry);
+---
+<Base locale="en" title={entry.data.title} description={entry.data.description} alternatePath={`/blog/${entry.id}/`}>
+  <div class="container reader-grid">
+    <article class="reading-article">
+      <div class="breadcrumbs"><a href="/en/">Home</a><span>/</span><a href="/en/blog/">Articles</a><span>/</span><span>Reading</span></div>
+      <div class="page-eyebrow">Published {entry.data.date.toISOString().slice(0,10)}</div>
+      <h1>{entry.data.title}</h1><p class="article-intro">{entry.data.description}</p>
+      <div class="tags article-tags">{entry.data.tags.map((tag)=><span>{tag}</span>)}</div>
+      {entry.data.repository && entry.data.revision && <p class="source-alert">Evidence level: {entry.data.verification === 'source-reviewed' ? 'Source reviewed (not independently reproduced)' : entry.data.verification === 'runtime-tested' ? 'Runtime tested (see linked artifacts)' : 'Externally reproduced'} · <a href={`${entry.data.repository}/commit/${entry.data.revision}`} target="_blank" rel="noopener noreferrer">Pinned revision {entry.data.revision.slice(0,10)} ↗</a></p>}
+      <ReadingToc headings={headings} locale="en" />
+      <div class="prose"><Content /></div>
+      <div class="article-end"><a href="/en/blog/">← Back to articles</a><a href="https://github.com/jyc-work/jyc-work.github.io" target="_blank" rel="noopener noreferrer">Review the source ↗</a></div>
+    </article>
+    <aside class="toc" aria-label="On this page"><div class="toc-title">On this page</div>{headings.filter((h)=>h.depth===2 || h.depth===3).map((h)=><a class:list={['toc-item',{'toc-nested':h.depth===3}]} href={`#${h.slug}`}>{h.text}</a>)}</aside>
+  </div>
+</Base>
