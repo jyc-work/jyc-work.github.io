@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 const widths = [320, 375, 390, 430];
-const paths = ['/', '/blog/', '/knowledge/', '/learning/', '/projects/', '/commands/', '/updates/', '/search/'];
+const paths = ['/', '/blog/', '/knowledge/', '/learning/', '/projects/', '/commands/', '/updates/', '/search/', '/en/', '/en/blog/', '/en/projects/', '/en/blog/astro-pages-engineering-case/', '/en/blog/playwright-mobile-regression/'];
 
 for (const width of widths) {
   test(`all primary routes have no document-level overflow at ${width}px`, async ({page}) => {
@@ -185,4 +185,59 @@ test('Chinese home and navigation do not show decorative English fragments', asy
   await page.goto('/blog/');
   await expect(page.locator('.listing-meta')).toContainText('篇文章');
   await expect(page.locator('.listing-meta a[href="/rss.xml"]')).toHaveCount(0);
+});
+
+test('English routes contain no Chinese UI text and expose reciprocal SEO metadata', async ({page}) => {
+  await page.setViewportSize({width:375,height:780});
+  for (const path of ['/en/','/en/blog/','/en/projects/','/en/blog/astro-pages-engineering-case/','/en/blog/playwright-mobile-regression/']) {
+    await page.goto(path);
+    await expect(page.locator('html')).toHaveAttribute('lang','en');
+    const visibleText = await page.locator('body').innerText();
+    expect(visibleText, `Chinese text leaked into English route: ${path}`).not.toMatch(/[\\u3400-\\u9fff]/);
+    await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', new RegExp(path.replace(/[.*+?^${}()|[\\]\\\\]/g, '\\\\$&')));
+    await expect(page.locator('link[rel="alternate"][hreflang="zh-CN"]')).toHaveAttribute('href', /https:\\/\\/jyc-work\\.github\\.io\\//);
+  }
+});
+
+test('language switch follows the matching article when a translation exists', async ({page}) => {
+  await page.setViewportSize({width:390,height:780});
+  await page.goto('/blog/astro-pages-engineering-case/');
+  await page.getByRole('link',{name:'English'}).click();
+  await expect(page).toHaveURL(/\\/en\\/blog\\/astro-pages-engineering-case\\/$/);
+  await expect(page.locator('html')).toHaveAttribute('lang','en');
+  await page.getByRole('link',{name:'Chinese'}).click();
+  await expect(page).toHaveURL(/\\/blog\\/astro-pages-engineering-case\\/$/);
+});
+
+test('English mobile navigation works and preserves the English interface', async ({page}) => {
+  await page.setViewportSize({width:375,height:780});
+  await page.goto('/en/');
+  const nav=page.getByRole('navigation',{name:'Primary navigation'});
+  await expect(nav).toBeHidden();
+  await page.getByRole('button',{name:'Open navigation menu'}).click();
+  await expect(nav).toBeVisible();
+  await expect(nav.getByRole('link',{name:'Articles'})).toBeVisible();
+  await page.keyboard.press('Escape');
+  await expect(nav).toBeHidden();
+});
+
+test('English 404 page localizes unknown English paths', async ({page}) => {
+  await page.setViewportSize({width:375,height:780});
+  await page.goto('/en/this-route-does-not-exist/');
+  await expect(page.locator('html')).toHaveAttribute('lang','en');
+  await expect(page.getByText("We couldn't find this page",{exact:false})).toBeVisible();
+  const visibleText=await page.locator('body').innerText();
+  expect(visibleText).not.toMatch(/[\\u3400-\\u9fff]/);
+  await page.getByRole('link',{name:'Back to home'}).click();
+  await expect(page).toHaveURL(/\\/en\\/$/);
+});
+
+test('sitemap lists English pages and reciprocal hreflang pairs', async ({request}) => {
+  const response=await request.get('http://127.0.0.1:4321/sitemap.xml');
+  expect(response.ok()).toBeTruthy();
+  const xml=await response.text();
+  expect(xml).toContain('https://jyc-work.github.io/en/');
+  expect(xml).toContain('https://jyc-work.github.io/en/blog/astro-pages-engineering-case/');
+  expect(xml).toContain('hreflang="zh-CN"');
+  expect(xml).toContain('hreflang="en"');
 });
