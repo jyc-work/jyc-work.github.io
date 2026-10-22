@@ -241,7 +241,7 @@ import Base from '../layouts/Base.astro';
       gap: 14px;
       margin-top: 18px;
     }
-    .search-result-item {
+    :global(.search-result-item) {
       display: block;
       min-width: 0;
       border: 1px solid #352b54;
@@ -250,8 +250,8 @@ import Base from '../layouts/Base.astro';
       transition: border-color .2s, transform .2s;
       overflow-wrap: anywhere;
     }
-    .search-result-item:hover { border-color: var(--neon-primary); transform: translateY(-2px); }
-    .search-result-meta {
+    :global(.search-result-item:hover) { border-color: var(--neon-primary); transform: translateY(-2px); }
+    :global(.search-result-meta) {
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -259,14 +259,14 @@ import Base from '../layouts/Base.astro';
       color: #a8aab5;
       font: 11px ui-monospace, monospace;
     }
-    .search-result-type { color: var(--neon-cyan); }
-    .search-result-item h3 { margin: 14px 0 8px; font-size: 17px; line-height: 1.5; }
-    .search-result-item p { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.8; }
-    .search-result-item .tags { margin-top: 14px; }
+    :global(.search-result-type) { color: var(--neon-cyan); }
+    :global(.search-result-item h3) { margin: 14px 0 8px; font-size: 17px; line-height: 1.5; }
+    :global(.search-result-item p) { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.8; }
+    :global(.search-result-item .tags) { margin-top: 14px; }
     @media (max-width: 650px) {
       .site-search-panel { padding: 17px; }
       .search-results-list { grid-template-columns: 1fr; }
-      .search-result-item { padding: 17px; }
+      :global(.search-result-item) { padding: 17px; }
     }
   </style>
 </Base>
