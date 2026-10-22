@@ -65,3 +65,14 @@ Browse `/commands/` for Linux, Docker, Kubernetes, containerd, Hadoop, Git, Kafk
 - One-click code copying and scroll-to-top
 - Automated Chromium checks at 320, 375, 390 and 430px viewports, including menu, article controls and overflow
 - Run `npm run build && npx playwright install chromium && npm run test:e2e` locally
+
+## Cyberpunk-inspired interactive interface
+
+The original JYC neon district theme is inspired by cyberpunk visual design; it uses no game logos, copied UI assets or protected character artwork. The site remains static-hosted on GitHub Pages.
+
+- Responsive neon yellow / near-black theme, cyan and magenta accent elements, angular panels and cards
+- Simulated runtime terminal events are decorative, explicitly labeled DEMO, and never represent production telemetry
+- FX switch controls the decorative glitch/scanline and terminal animation, persisted locally when storage is available
+- OS reduced-motion preference always wins; the terminal falls back to a static list
+- Local HUD clock displays the browser's local time; repository update feed is CI-driven and reviewed, not a live data stream
+- Original mobile navigation, content, search, RSS and keyboard controls remain intact

@@ -65,6 +65,44 @@ test('reduced motion preference is respected', async ({page})=>{
   await page.emulateMedia({reducedMotion:'reduce'});
   await page.setViewportSize({width:390,height:780});
   await page.goto('/');
-  const duration=await page.locator('.cursor').evaluate(el=>getComputedStyle(el).animationDuration);
+  const duration=await page.locator('.cyber-scanline').evaluate(el=>getComputedStyle(el).animationDuration);
   expect(Number.parseFloat(duration)).toBeLessThan(0.01);
+});
+
+
+test('cyberpunk home FX can be toggled and persists across navigation', async ({page})=>{
+  await page.setViewportSize({width:375,height:780});
+  await page.goto('/');
+  const fx=page.getByRole('button',{name:'切换动态视觉特效'});
+  await expect(fx).toBeVisible();
+  await expect(fx).toHaveAttribute('aria-pressed','true');
+  await fx.click();
+  await expect(fx).toHaveAttribute('aria-pressed','false');
+  await expect(page.locator('html')).toHaveClass(/fx-off/);
+  await page.goto('/blog/');
+  await expect(page.locator('html')).toHaveClass(/fx-off/);
+  await page.goto('/');
+  await fx.click();
+  await expect(fx).toHaveAttribute('aria-pressed','true');
+  await expect(page.locator('html')).not.toHaveClass(/fx-off/);
+});
+
+test('home runtime is explicitly simulated, and displays browser-local time', async ({page})=>{
+  await page.setViewportSize({width:390,height:780});
+  await page.goto('/');
+  await expect(page.getByText('STATUS : SIMULATED')).toBeVisible();
+  await expect(page.locator('#cyber-runtime-lines > div')).toHaveCount(6);
+  await expect(page.locator('#hud-local-clock')).toHaveText(/^[0-2][0-9]:[0-5][0-9]$/);
+  await expect(page.locator('h1')).toBeVisible();
+  const palette = await page.locator('html').evaluate(el=>getComputedStyle(el).getPropertyValue('--neon-yellow').trim());
+  expect(palette).toBe('#f3e600');
+});
+
+test('cyberpunk visual FX respects reduced-motion OS preference',async ({page})=>{
+  await page.emulateMedia({reducedMotion:'reduce'});
+  await page.setViewportSize({width:320,height:780});
+  await page.goto('/');
+  await expect(page.getByRole('button',{name:'切换动态视觉特效'})).toHaveAttribute('aria-pressed','false');
+  await expect(page.locator('html')).toHaveClass(/fx-off/);
+  await expect(page.locator('#cyber-runtime-lines > div')).toHaveCount(6);
 });
