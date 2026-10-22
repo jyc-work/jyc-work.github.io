@@ -1,5 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
+import HomeHero from '../components/HomeHero.astro';
 import { getCollection } from 'astro:content';
 import { projects } from '../data/projects';
 
@@ -8,37 +9,7 @@ const posts = (await getCollection('blog', ({ data }) => !data.draft))
 const featured = projects.slice(0, 3);
 ---
 <Base>
-  <section class="hero container">
-    <div class="hero-copy">
-      
-      <h1><span class="cyber-glitch" data-text="让代码成为证据">让代码成为证据</span><br /><span class="gradient-text">以工程解决问题</span></h1>
-      <p class="hero-zh">让每一项技术结论，都有代码、实验或清晰的证据边界。</p>
-      <p class="hero-desc">围绕 <strong>Agent Engineering</strong>、Java 后端、数据工程与全栈开发，持续记录设计取舍、踩坑过程和可复现的技术实验。</p>
-      <div class="hero-actions">
-        <a class="btn primary" href="/projects/">探索项目 <span aria-hidden="true">↗</span></a>
-        <a class="btn secondary" href="/blog/">阅读文章 <span aria-hidden="true">→</span></a>
-      </div>
-      <div class="fx-console"><button class="fx-switch" type="button" aria-label="切换动态视觉特效" aria-pressed="false">动效：关</button></div>
-    </div>
-    <div class="hero-visual" aria-label="原创霓虹都市视觉与模拟工程终端">
-      <div class="night-city-art" aria-hidden="true"></div>
-      
-      <div class="orb orb-a"></div><div class="orb orb-b"></div>
-      <div class="orbit orbit-one"></div><div class="orbit orbit-two"></div>
-      <div class="terminal-card">
-        <div class="terminal-top"><span class="terminal-dots"><i></i><i></i><i></i></span><span>工程流程示例</span></div>
-        <div class="terminal-body" id="cyber-runtime-lines" aria-hidden="true">
-          <div><span class="line-number">01</span> 启动 · 初始化演示流程</div>
-          <div><span class="line-number">02</span> 完成 · 读取工具列表</div>
-          <div><span class="line-number">03</span> 完成 · 加载权限规则</div>
-          <div><span class="line-number">04</span> 模拟 · 发起工具调用</div>
-          <div><span class="line-number">05</span> 完成 · 核对执行记录</div>
-          <div><span class="line-number">06</span> 待命 · 等待操作</div>
-        </div>
-      </div>
-      <div class="cyber-scanline" aria-hidden="true"></div>
-    </div>
-  </section>
+  <HomeHero lang="zh-CN" />
 
   <section class="manifest container">
     <span>研究原则</span>
