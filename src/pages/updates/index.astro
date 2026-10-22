@@ -1,6 +1,7 @@
 ---
 import Base from '../../layouts/Base.astro';
 import feed from '../../data/tech-watch.json';
+const checkedDate = feed.checked_at == null ? '尚未运行' : String(feed.checked_at).slice(0, 10);
 const updates = feed.updates as Array<{
   repository: string; domain: string; sha: string; url: string; subject: string;
   observed_at: string; summary: string; impact: string; next_action: string;
@@ -15,7 +16,7 @@ const updates = feed.updates as Array<{
     <div class="watch-stats">
       <div><span>跟踪仓库</span><strong>{feed.repository_count}</strong></div>
       <div><span>已发布变更</span><strong>{updates.length}</strong></div>
-      <div><span>最近检查</span><strong class="watch-date">{feed.checked_at ? feed.checked_at.slice(0,10) : '尚未运行'}</strong></div>
+      <div><span>最近检查</span><strong class="watch-date">{checkedDate}</strong></div>
     </div>
     <div class="detail-note">记录中的 AI 说明是学习辅助材料，不等于已证实的兼容性变化或性能结论。每条信息以 GitHub 原始 Commit 为核验入口；自动化只创建 PR，不自行合并。</div>
     {updates.length === 0
