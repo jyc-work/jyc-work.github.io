@@ -7,8 +7,9 @@ for (const width of widths) {
   test(`all primary routes have no document-level overflow at ${width}px`, async ({page}) => {
     await page.setViewportSize({width, height: 760});
     for (const path of paths) {
-      await page.goto(path);
-      await expect(page.locator('h1')).toBeVisible();
+      const response = await page.goto(path);
+      expect(response?.status(), `Expected ${path} to return 200 at ${page.url()}`).toBe(200);
+      await expect(page.locator('h1:visible').first(), `Missing visible heading at ${path}`).toBeVisible();
       const documentWidth = await page.evaluate(() => document.documentElement.scrollWidth);
       expect(documentWidth, `Unexpected horizontal overflow on ${path} at ${width}px`).toBeLessThanOrEqual(width+2);
     }
@@ -201,7 +202,7 @@ test('Chinese and English home are reciprocal with canonical language metadata',
   await expect(page.getByRole('navigation',{name:'Main navigation'})).toBeVisible();
   await page.keyboard.press('Escape');
   await expect(page.getByRole('navigation',{name:'Main navigation'})).toBeHidden();
-  await expect(page.locator('link[type="application/rss+xml"]')).toHaveAttribute('title','JYC Technical Blog RSS');
+  await expect(page.locator('link[type="application/rss+xml"]')).toHaveCount(0);
   await page.getByRole('link',{name:'Read in Chinese'}).click();
   await expect(page).toHaveURL(/\/$/);
   await expect(page.locator('html')).toHaveAttribute('lang','zh-CN');
@@ -232,9 +233,17 @@ for(const width of [320,375,390,430]){
   test('English routes do not overflow at '+width+'px',async({page})=>{
     await page.setViewportSize({width,height:760});
     for(const route of ['/en/','/en/articles/','/en/projects/','/en/projects/jyc-engineering-lab/','/en/articles/astro-pages-engineering-case/','/en/articles/playwright-mobile-regression/']){
-      await page.goto(route);
-      await expect(page.locator('h1')).toBeVisible();
+      const response=await page.goto(route);
+      expect(response?.status(), 'route should exist: '+route).toBe(200);
+      await expect(page.locator('h1:visible').first()).toBeVisible();
       await expect(page.locator('html')).toHaveAttribute('lang','en');
+      const visibleText=await page.locator('body').evaluate(body=>{
+        const clone=body.cloneNode(true) as HTMLElement;
+        clone.querySelectorAll('pre, code').forEach(node=>node.remove());
+        return clone.innerText;
+      });
+      expect(visibleText, 'Chinese interface text leaked into English route: '+route).not.toMatch(/[\u3400-\u9fff]/);
+      await expect(page.locator('link[type="application/rss+xml"]')).toHaveCount(0);
       const actual=await page.evaluate(()=>document.documentElement.scrollWidth);
       expect(actual, 'overflow at '+route+' in '+width+'px').toBeLessThanOrEqual(width+2);
     }
@@ -247,4 +256,31 @@ test('No misleading English version switch on untranslated Chinese pages',async(
   await page.goto('/en/projects/jyc-engineering-lab/');
   await expect(page.getByRole('link',{name:'Read in Chinese'})).toHaveAttribute('href','/projects/jyc-engineering-lab/');
   await expect(page.getByRole('navigation',{name:'Main navigation'})).toBeVisible();
+});
+
+test('Unknown English routes render an English 404 page',async({page})=>{
+  await page.setViewportSize({width:375,height:780});
+  await page.goto('/en/this-page-does-not-exist/');
+  await expect(page.locator('html')).toHaveAttribute('lang','en');
+  await expect(page.getByText("We couldn't find this page",{exact:false})).toBeVisible();
+  const visibleText=await page.locator('body').innerText();
+  expect(visibleText).not.toMatch(/[\u3400-\u9fff]/);
+  await page.getByRole('link',{name:'Back to home'}).click();
+  await expect(page).toHaveURL('http://127.0.0.1:4321/en/');
+});
+
+test('Sitemap includes English URLs and reciprocal hreflang pairs while RSS remains Chinese-only',async({request})=>{
+  const sitemapResponse=await request.get('http://127.0.0.1:4321/sitemap.xml');
+  expect(sitemapResponse.ok()).toBeTruthy();
+  const sitemap=await sitemapResponse.text();
+  expect(sitemap).toContain('https://jyc-work.github.io/en/');
+  expect(sitemap).toContain('https://jyc-work.github.io/en/articles/astro-pages-engineering-case/');
+  expect(sitemap).toContain('hreflang="zh-CN"');
+  expect(sitemap).toContain('hreflang="en"');
+  expect(sitemap).toContain('hreflang="x-default"');
+  const rssResponse=await request.get('http://127.0.0.1:4321/rss.xml');
+  expect(rssResponse.ok()).toBeTruthy();
+  const rss=await rssResponse.text();
+  expect(rss).toContain('<language>zh-cn</language>');
+  expect(rss).not.toContain('Engineering a Static Site Delivery Pipeline');
 });

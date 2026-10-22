@@ -1,0 +1,77 @@
+---
+import Base from '../../layouts/Base.astro';
+---
+<Base title="站内搜索" description="搜索本站公开的技术文章、知识条目、命令手册、学习路线与项目。">
+  <section class="container listing-page search-page">
+    <h1>站内搜索<span class="accent">.</span></h1>
+    <p class="page-lead">搜索公开文章、知识条目、命令专题、学习路线和项目。输入关键词后查看匹配结果。</p>
+    <label for="site-search">搜索关键词</label>
+    <input id="site-search" class="search-input" type="search" placeholder="例如 Kafka、Agent、ClickHouse、幂等…" autocomplete="off" aria-describedby="search-status" />
+    <p id="search-status" role="status" aria-live="polite">正在加载搜索索引…</p>
+    <div id="search-results" class="article-list" aria-label="搜索结果"></div>
+  </section>
+  <script>
+    type SearchRow = { type: string; title: string; description: string; url: string; tags: string[] };
+    const input = document.querySelector<HTMLInputElement>('#site-search');
+    const status = document.querySelector<HTMLElement>('#search-status');
+    const results = document.querySelector<HTMLElement>('#search-results');
+    let rows: SearchRow[] = [];
+    const normalize = (value: string) => value.toLocaleLowerCase().normalize('NFKC').trim();
+    const render = () => {
+      if (!input || !status || !results) return;
+      const query = normalize(input.value);
+      results.replaceChildren();
+      if (!query) {
+        status.textContent = '请输入关键词开始搜索。';
+        return;
+      }
+      const matched = rows.filter((row) => normalize([row.title, row.description, row.type, ...row.tags].join(' ')).includes(query)).slice(0, 40);
+      status.textContent = matched.length ? `找到 ${matched.length} 条匹配结果。` : '没有找到匹配内容，请尝试其他关键词。';
+      matched.forEach((item, index) => {
+        if (!item.url.startsWith('/')) return;
+        const link = document.createElement('a');
+        link.className = 'article-row';
+        link.href = item.url;
+        const number = document.createElement('span');
+        number.className = 'article-index';
+        number.textContent = String(index + 1).padStart(2, '0');
+        const main = document.createElement('div');
+        main.className = 'article-row-main';
+        const title = document.createElement('h3');
+        title.textContent = item.title;
+        const description = document.createElement('p');
+        description.textContent = item.description;
+        const meta = document.createElement('div');
+        meta.className = 'tags';
+        const type = document.createElement('span');
+        type.textContent = item.type;
+        meta.append(type);
+        item.tags.slice(0, 5).forEach((tag) => {
+          const badge = document.createElement('span');
+          badge.textContent = tag;
+          meta.append(badge);
+        });
+        main.append(title, description, meta);
+        const arrow = document.createElement('span');
+        arrow.className = 'article-go';
+        arrow.textContent = '↗';
+        link.append(number, main, arrow);
+        results.append(link);
+      });
+    };
+    if (input && status) {
+      fetch('/search-index.json')
+        .then((response) => {
+          if (!response.ok) throw new Error('Search index request failed');
+          return response.json();
+        })
+        .then((data: SearchRow[]) => {
+          rows = Array.isArray(data) ? data : [];
+          status.textContent = '搜索索引已就绪。';
+          render();
+        })
+        .catch(() => { status.textContent = '搜索索引暂时不可用，请稍后重试。'; });
+      input.addEventListener('input', render);
+    }
+  </script>
+</Base>
