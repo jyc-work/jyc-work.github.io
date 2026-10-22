@@ -29,6 +29,7 @@ npm run preview
 - Knowledge notes: `src/content/knowledge/*.md`
 - Project case studies: `src/data/projects.ts`
 - Learning paths and eight curated GitHub resources: `src/data/learning.ts`
+- Engineering command handbook: `src/content/commands/*.md` (14 topics; 6 database/SQL topics)
 
 Content collections require title, description, date, and optional tags. Add `draft: true` in frontmatter to exclude a document from the public build.
 
@@ -52,3 +53,7 @@ This is the first public version. Project pages explicitly state their evidence 
 ## Attribution
 
 The [Agent design patterns tutorial](https://zhiwenliang.github.io/learning/agent-design-patterns/index.html) is linked as an external source. We publish an independent synthesis, not the tutorial's copyrighted text.
+
+## Engineering command handbook
+
+Browse `/commands/` for Linux, Docker, Kubernetes, containerd, Hadoop, Git, Kafka, Flink, generic SQL, MySQL, ClickHouse, PostgreSQL, Redis and GaussDB. Commands are grouped by platform, tagged with version and security cautions, and integrated into the site search and sitemap. No financial or quant research content is published here.
