@@ -2,6 +2,7 @@
 title: "最小 Agent Loop：工具执行为什么需要可靠性外壳"
 description: "从一次模型调用扩展到可控的工具调用：参数验证、授权、事件记录、终止条件与故障测试。"
 date: 2026-10-22
+draft: true
 tags: ["Agent Engineering", "Tool Calling", "Harness"]
 ---
 
