@@ -2,6 +2,7 @@
 import '../styles/global.css';
 import '../styles/updates.css';
 import '../styles/commands.css';
+import '../styles/mobile.css';
 
 interface Props {
   title?: string;
@@ -47,12 +48,18 @@ const links = [
             <span class="brand-mark" aria-hidden="true">J<span class="brand-dot">.</span></span>
             <span class="brand-copy"><strong>JYC</strong><small>ENGINEERING LAB</small></span>
           </a>
-          <nav class="site-nav" aria-label="主导航">
+          <nav id="primary-navigation" class="site-nav" aria-label="主导航">
             {links.map((link) => (
-              <a href={link.href} class:list={['nav-link', { active: link.href === '/' ? current === '/' : current.startsWith(link.href) }]}>{link.label}</a>
+              <a href={link.href} class:list={['nav-link', { active: link.href === '/' ? current === '/' : current.startsWith(link.href) }]} aria-current={(link.href === '/' ? current === '/' : current.startsWith(link.href)) ? 'page' : undefined}>{link.label}</a>
             ))}
           </nav>
-          <a class="header-search" href="/search/" aria-label="搜索文章"><span aria-hidden="true">⌕</span> <span>搜索</span><kbd>/</kbd></a>
+          <div class="header-actions">
+            <a class="header-search" href="/search/" aria-label="搜索文章"><span aria-hidden="true">⌕</span> <span>搜索</span><kbd>/</kbd></a>
+            <button class="mobile-menu-toggle" type="button" aria-controls="primary-navigation" aria-expanded="false" aria-label="打开导航菜单">
+              <svg class="menu-bars" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+              <svg class="menu-x" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19"/></svg>
+            </button>
+          </div>
         </div>
       </header>
 
@@ -75,8 +82,69 @@ const links = [
         </div>
       </footer>
     </div>
+    <button class="back-to-top" type="button" aria-label="返回顶部" title="返回顶部" hidden>↑</button>
     <script>
+      const menuButton = document.querySelector<HTMLButtonElement>('.mobile-menu-toggle');
+      const menu = document.querySelector<HTMLElement>('#primary-navigation');
+      const mobileViewport = window.matchMedia('(max-width: 780px)');
+      const closeMenu = (restoreFocus = false) => {
+        if (!menuButton || !menu) return;
+        const wasOpen = menuButton.getAttribute('aria-expanded') === 'true';
+        menuButton.setAttribute('aria-expanded', 'false');
+        menuButton.setAttribute('aria-label', '打开导航菜单');
+        menu.classList.remove('is-open');
+        if (restoreFocus && wasOpen) menuButton.focus();
+      };
+      menuButton?.addEventListener('click', () => {
+        const willOpen = menuButton.getAttribute('aria-expanded') !== 'true';
+        if (!willOpen) { closeMenu(); return; }
+        menuButton.setAttribute('aria-expanded', 'true');
+        menuButton.setAttribute('aria-label', '关闭导航菜单');
+        menu?.classList.add('is-open');
+      });
+      menu?.querySelectorAll('a').forEach(link => link.addEventListener('click', () => closeMenu()));
+      document.addEventListener('pointerdown', (event) => {
+        if (menuButton?.getAttribute('aria-expanded') !== 'true') return;
+        if (!(event.target instanceof Node) || !event.target.parentElement?.closest('.site-header')) closeMenu();
+      });
+      mobileViewport.addEventListener('change', () => closeMenu());
+
+      document.querySelectorAll<HTMLPreElement>('.prose pre').forEach(pre => {
+        const code = pre.querySelector('code');
+        if (!code || pre.querySelector('.article-copy, .command-copy')) return;
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'article-copy';
+        button.textContent = '复制代码';
+        button.setAttribute('aria-label', '复制代码');
+        button.addEventListener('click', async () => {
+          try {
+            await navigator.clipboard.writeText(code.textContent ?? '');
+            button.textContent = '已复制';
+          } catch {
+            button.textContent = '复制失败，请手动选择';
+          }
+          window.setTimeout(() => { button.textContent = '复制代码'; }, 1800);
+        });
+        pre.appendChild(button);
+      });
+
+      const backToTop = document.querySelector<HTMLButtonElement>('.back-to-top');
+      const updateBackToTop = () => {
+        if (backToTop) backToTop.hidden = window.scrollY < 560;
+      };
+      window.addEventListener('scroll', updateBackToTop, {passive: true});
+      updateBackToTop();
+      backToTop?.addEventListener('click', () => window.scrollTo({
+        top: 0,
+        behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth'
+      }));
+
       document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && menuButton?.getAttribute('aria-expanded') === 'true') {
+          event.preventDefault();
+          closeMenu(true);
+        }
         const target = event.target;
         if (event.key === '/' && !(target instanceof HTMLInputElement) && !(target instanceof HTMLTextAreaElement) && !event.metaKey && !event.ctrlKey) {
           event.preventDefault();

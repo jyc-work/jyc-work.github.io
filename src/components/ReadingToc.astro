@@ -1,0 +1,27 @@
+---
+interface Heading {
+  depth: number;
+  text: string;
+  slug: string;
+}
+interface Props {
+  headings: Heading[];
+}
+const { headings }=Astro.props;
+const tocHeadings=headings.filter(h=>h.depth===2||h.depth===3);
+---
+{tocHeadings.length>0&&
+  <details class="mobile-reading-toc">
+    <summary>本页目录 · {tocHeadings.length} 节</summary>
+    <nav aria-label="移动端文章目录">
+      {tocHeadings.map(h=><a href={`#${h.slug}`} data-depth={h.depth}>{h.text}</a>)}
+    </nav>
+  </details>
+}
+<script>
+  document.querySelectorAll<HTMLDetailsElement>('.mobile-reading-toc').forEach(details=>{
+    details.querySelectorAll<HTMLAnchorElement>('a').forEach(link=>{
+      link.addEventListener('click',()=>{details.open=false;});
+    });
+  });
+</script>

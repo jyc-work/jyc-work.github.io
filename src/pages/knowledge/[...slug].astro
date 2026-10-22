@@ -1,5 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro';
+import ReadingToc from '../../components/ReadingToc.astro';
 import { getCollection, render } from 'astro:content';
 import type { CollectionEntry } from 'astro:content';
 export async function getStaticPaths() {
@@ -16,6 +17,7 @@ const {Content,headings} = await render(entry);
       <div class="page-eyebrow">KNOWLEDGE / INDEXED · {entry.data.date.toISOString().slice(0,10)}</div>
       <h1>{entry.data.title}</h1><p class="article-intro">{entry.data.description}</p>
       {entry.data.source && <p class="source-alert">本文包含对外部公开资料的独立整理，<a href={entry.data.source} target="_blank" rel="noopener noreferrer">阅读原始来源 ↗</a></p>}
+      <ReadingToc headings={headings} />
       <div class="prose"><Content /></div>
       <div class="article-end"><a href="/knowledge/">← 返回知识库</a></div>
     </article>

@@ -1,5 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro';
+import ReadingToc from '../../components/ReadingToc.astro';
 import { getCollection, render } from 'astro:content';
 import type { CollectionEntry } from 'astro:content';
 export async function getStaticPaths(){
@@ -20,6 +21,7 @@ const related=(await getCollection('commands')).filter(item=>item.id!==entry.id&
       <p class="command-intro">{entry.data.description}</p>
       <div class="command-meta"><span>更新：{entry.data.updated.toISOString().slice(0,10)}</span><span>需要核对实际版本与执行权限</span></div>
       <div class="command-warning">本页包含可复制的命令。执行前请检查实例、namespace、读写副作用及是否会访问真实业务数据。建议先在测试环境验证。</div>
+      <ReadingToc headings={headings} />
       <div class="prose command-prose"><Content /></div>
       <div class="command-article-bottom">
         <a href="/commands/">← 返回命令手册</a>
@@ -36,20 +38,4 @@ const related=(await getCollection('commands')).filter(item=>item.id!==entry.id&
       </div>}
     </aside>
   </div>
-  <script>
-    document.querySelectorAll<HTMLPreElement>('.command-prose pre').forEach(pre=>{
-      const code = pre.querySelector('code');
-      if(!code)return;
-      const button = document.createElement('button');
-      button.type='button';
-      button.className='command-copy';
-      button.textContent='复制命令';
-      button.setAttribute('aria-label','复制当前代码块');
-      button.addEventListener('click',async()=>{
-        try { await navigator.clipboard.writeText(code.textContent ?? ''); button.textContent='已复制'; }
-        catch { button.textContent='请手动选择复制'; }
-      });
-      pre.appendChild(button);
-    });
-  </script>
 </Base>
