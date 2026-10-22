@@ -63,7 +63,7 @@ def check_document(text: str, path: str = "<document>") -> list[str]:
         issues.append(f"{path}: at least five technical sections expected")
     if body.count("~~~") < 4:
         issues.append(f"{path}: at least two fenced configuration/code blocks expected")
-    heading_set = HEADINGS_EN if "/blog-en/" in ("/" + path.replace("\\\\", "/")) else HEADINGS_ZH
+    heading_set = HEADINGS_EN if "/blog-en/" in ("/" + path.replace("\\", "/")) else HEADINGS_ZH
     for heading in heading_set:
         if not any(heading.lower() in line.lower() for line in re.findall(r"(?m)^## .+$", body)):
             issues.append(f"{path}: missing section covering {heading}")
