@@ -10,14 +10,30 @@ import '../styles/night-city.css';
 interface Props {
   title?: string;
   description?: string;
+  lang?: 'zh-CN' | 'en';
 }
 const {
   title = 'JYC 技术实验室',
-  description = 'JYC 技术博客：Agent 工程、Java 后端、数据工程、全栈开发和工程实践'
+  description = 'JYC 技术博客：Agent 工程、Java 后端、数据工程、全栈开发和工程实践',
+  lang = 'zh-CN'
 } = Astro.props;
+const isEnglish = lang === 'en';
 const current = Astro.url.pathname;
+const pairs: Record<string, string> = {
+  '/': '/en/',
+  '/blog/': '/en/articles/',
+  '/projects/': '/en/projects/',
+  '/blog/astro-pages-engineering-case/': '/en/articles/astro-pages-engineering-case/',
+  '/blog/playwright-mobile-regression/': '/en/articles/playwright-mobile-regression/',
+  '/projects/jyc-engineering-lab/': '/en/projects/jyc-engineering-lab/'
+};
+const inversePairs = Object.fromEntries(Object.entries(pairs).map(([zh,en])=>[en,zh]));
+const counterpart = isEnglish ? inversePairs[current] : pairs[current];
+const chinesePath = isEnglish ? counterpart : current;
+const englishPath = isEnglish ? current : counterpart;
+const localizedBrand = isEnglish ? 'JYC Engineering Lab' : 'JYC 技术实验室';
 const canonical = new URL(Astro.url.pathname, Astro.site).toString();
-const links = [
+const chineseLinks = [
   { href: '/', label: '首页' },
   { href: '/blog/', label: '技术文章' },
   { href: '/projects/', label: '项目作品' },
@@ -26,9 +42,17 @@ const links = [
   { href: '/updates/', label: '技术动态' },
   { href: '/knowledge/', label: '知识库' }
 ];
+const englishLinks = [
+  { href: '/en/', label: 'Home' },
+  { href: '/en/articles/', label: 'Articles' },
+  { href: '/en/projects/', label: 'Projects' }
+];
+const links = isEnglish ? englishLinks : chineseLinks;
+const menuOpen = isEnglish ? 'Open navigation menu' : '打开导航菜单';
+const menuClose = isEnglish ? 'Close navigation menu' : '关闭导航菜单';
 ---
 <!doctype html>
-<html lang="zh-CN">
+<html lang={lang}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -38,27 +62,33 @@ const links = [
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
     <link rel="canonical" href={canonical} />
+    {counterpart && chinesePath && englishPath && <>
+      <link rel="alternate" hreflang="zh-CN" href={new URL(chinesePath, Astro.site).toString()} />
+      <link rel="alternate" hreflang="en" href={new URL(englishPath, Astro.site).toString()} />
+    </>}
+    {current === '/' && <link rel="alternate" hreflang="x-default" href={new URL('/', Astro.site).toString()} />}
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="alternate" type="application/rss+xml" title="JYC 技术博客 RSS" href="/rss.xml" />
-    <title>{title === 'JYC 技术实验室' ? title : `${title} · JYC 技术实验室`}</title>
+    <title>{title === localizedBrand ? title : `${title} · ${localizedBrand}`}</title>
   </head>
   <body>
-    <a class="skip-link" href="#content">跳到正文</a>
+    <a class="skip-link" href="#content">{isEnglish ? 'Skip to content' : '跳到正文'}</a>
     <div class="site-shell">
       <header class="site-header">
         <div class="header-inner container">
-          <a class="brand" href="/" aria-label="JYC Engineering Lab 首页">
+          <a class="brand" href={isEnglish ? "/en/" : "/"} aria-label={isEnglish ? "JYC Engineering Lab home" : "JYC 技术实验室首页"}>
             <span class="brand-mark" aria-hidden="true">J<span class="brand-dot">.</span></span>
-            <span class="brand-copy"><strong>JYC</strong><small>技术实验室</small></span>
+            <span class="brand-copy"><strong>JYC</strong><small>{isEnglish ? "ENGINEERING" : "技术实验室"}</small></span>
           </a>
-          <nav id="primary-navigation" class="site-nav" aria-label="主导航">
+          <nav id="primary-navigation" class="site-nav" aria-label={isEnglish ? "Main navigation" : "主导航"}>
             {links.map((link) => (
               <a href={link.href} class:list={['nav-link', { active: link.href === '/' ? current === '/' : current.startsWith(link.href) }]} aria-current={(link.href === '/' ? current === '/' : current.startsWith(link.href)) ? 'page' : undefined}>{link.label}</a>
             ))}
           </nav>
           <div class="header-actions">
-            <a class="header-search" href="/search/" aria-label="搜索文章"><span aria-hidden="true">⌕</span> <span>搜索</span><kbd>/</kbd></a>
-            <button class="mobile-menu-toggle" type="button" aria-controls="primary-navigation" aria-expanded="false" aria-label="打开导航菜单">
+            {!isEnglish && <a class="header-search" href="/search/" aria-label="搜索文章"><span aria-hidden="true">⌕</span> <span>搜索</span><kbd>/</kbd></a>}
+            {counterpart && <a class="lang-switch" href={counterpart} hreflang={isEnglish ? 'zh-CN' : 'en'} lang={isEnglish ? 'zh-CN' : 'en'} aria-label={isEnglish ? '阅读中文版' : 'View the English version'}>{isEnglish ? '中文' : 'EN'}</a>}
+            <button class="mobile-menu-toggle" type="button" aria-controls="primary-navigation" aria-expanded="false" aria-label={menuOpen} data-label-open={menuOpen} data-label-close={menuClose}>
               <svg class="menu-bars" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
               <svg class="menu-x" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19"/></svg>
             </button>
@@ -71,20 +101,25 @@ const links = [
       <footer class="site-footer">
         <div class="container footer-inner">
           <div>
-            <strong>JYC 技术实验室</strong>
-            <p>记录可解释的工程决策，分享可验证的技术成果。</p>
+            <strong>{localizedBrand}</strong>
+            <p>{isEnglish ? "Engineering decisions, source-backed evidence, and explicit limitations." : "记录可解释的工程决策，分享可验证的技术成果。"}</p>
           </div>
           <div class="footer-links">
             <a href="https://github.com/jyc-work" target="_blank" rel="noopener noreferrer">GitHub ↗</a>
-            <a href="/updates/">技术动态</a>
-            <a href="/commands/">命令手册</a>
-            <a href="/knowledge/agent-patterns/">来源与引用</a>
+            {isEnglish ? <>
+              <a href="/en/articles/">Articles</a>
+              <a href="/en/projects/">Projects</a>
+            </> : <>
+              <a href="/updates/">技术动态</a>
+              <a href="/commands/">命令手册</a>
+              <a href="/knowledge/agent-patterns/">来源与引用</a>
+            </>}
           </div>
           <span class="copyright">© {new Date().getFullYear()} JYC</span>
         </div>
       </footer>
     </div>
-    <button class="back-to-top" type="button" aria-label="返回顶部" title="返回顶部" hidden>↑</button>
+    <button class="back-to-top" type="button" aria-label={isEnglish ? "Back to top" : "返回顶部"} title={isEnglish ? "Back to top" : "返回顶部"} hidden>↑</button>
     <script>
       import '../scripts/cyberpunk';
       const menuButton = document.querySelector<HTMLButtonElement>('.mobile-menu-toggle');
@@ -94,7 +129,7 @@ const links = [
         if (!menuButton || !menu) return;
         const wasOpen = menuButton.getAttribute('aria-expanded') === 'true';
         menuButton.setAttribute('aria-expanded', 'false');
-        menuButton.setAttribute('aria-label', '打开导航菜单');
+        menuButton.setAttribute('aria-label', menuButton.dataset.labelOpen ?? '打开导航菜单');
         menu.classList.remove('is-open');
         if (restoreFocus && wasOpen) menuButton.focus();
       };
@@ -102,7 +137,7 @@ const links = [
         const willOpen = menuButton.getAttribute('aria-expanded') !== 'true';
         if (!willOpen) { closeMenu(); return; }
         menuButton.setAttribute('aria-expanded', 'true');
-        menuButton.setAttribute('aria-label', '关闭导航菜单');
+        menuButton.setAttribute('aria-label', menuButton.dataset.labelClose ?? '关闭导航菜单');
         menu?.classList.add('is-open');
       });
       menu?.querySelectorAll('a').forEach(link => link.addEventListener('click', () => closeMenu()));
@@ -112,22 +147,24 @@ const links = [
       });
       mobileViewport.addEventListener('change', () => closeMenu());
 
+      const english = document.documentElement.lang === 'en';
+      const copyDefault = english ? 'Copy code' : '复制代码';
       document.querySelectorAll<HTMLPreElement>('.prose pre').forEach(pre => {
         const code = pre.querySelector('code');
         if (!code || pre.querySelector('.article-copy, .command-copy')) return;
         const button = document.createElement('button');
         button.type = 'button';
         button.className = 'article-copy';
-        button.textContent = '复制代码';
-        button.setAttribute('aria-label', '复制代码');
+        button.textContent = copyDefault;
+        button.setAttribute('aria-label', copyDefault);
         button.addEventListener('click', async () => {
           try {
             await navigator.clipboard.writeText(code.textContent ?? '');
-            button.textContent = '已复制';
+            button.textContent = english ? 'Copied' : '已复制';
           } catch {
-            button.textContent = '复制失败，请手动选择';
+            button.textContent = english ? 'Copy failed: select text manually' : '复制失败，请手动选择';
           }
-          window.setTimeout(() => { button.textContent = '复制代码'; }, 1800);
+          window.setTimeout(() => { button.textContent = copyDefault; }, 1800);
         });
         pre.appendChild(button);
       });
@@ -149,7 +186,7 @@ const links = [
           closeMenu(true);
         }
         const target = event.target;
-        if (event.key === '/' && !(target instanceof HTMLInputElement) && !(target instanceof HTMLTextAreaElement) && !event.metaKey && !event.ctrlKey) {
+        if (!english && event.key === '/' && !(target instanceof HTMLInputElement) && !(target instanceof HTMLTextAreaElement) && !event.metaKey && !event.ctrlKey) {
           event.preventDefault();
           window.location.href = '/search/';
         }
