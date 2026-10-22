@@ -18,7 +18,7 @@ const days=Object.entries(updates.reduce((acc,entry)=>{
 ---
 <Base title="技术动态时间线" description="由 GitHub 原始提交驱动的技术动态时间线与网站公开开发记录">
   <div class="container listing-page">
-    <div class="page-eyebrow">TECH WATCH / VERIFIED SOURCE LINKS</div>
+    
     <h1>技术动态时间线<span class="accent">.</span></h1>
     <p class="page-lead">区分三件事：上游 GitHub 发生了提交、AI 提供了学习提示、技术影响是否经过复现实验。只有第一项由原始 Commit 直接证明。</p>
 
@@ -29,15 +29,15 @@ const days=Object.entries(updates.reduce((acc,entry)=>{
     </div>
 
     <div class="watch-origin-steps" aria-label="技术观察数据来源与处理流程">
-      <div><strong>01 / SOURCE</strong>GitHub 公开 Commit</div>
-      <div><strong>02 / DIFF</strong>比对仓库 HEAD SHA</div>
-      <div><strong>03 / AI DRAFT</strong>可选模型生成学习提示</div>
-      <div><strong>04 / REVIEW</strong>PR 合并后发布快照</div>
+      <div><strong>01 / 来源</strong>GitHub 公开 Commit</div>
+      <div><strong>02 / 变更</strong>比对仓库 HEAD SHA</div>
+      <div><strong>03 / AI 辅助</strong>可选模型生成学习提示</div>
+      <div><strong>04 / 审核</strong>PR 合并后发布快照</div>
     </div>
     <p class="watch-review-disclaimer">提交记录与代码审查、可复现实验不是一回事。即使经过 PR 合并，AI 对影响范围的判断也不能自动视为事实。发布日期是本站观察记录时间，不是上游发布版本的时间。</p>
 
     <section aria-label="上游技术变更">
-      <div class="section-heading resources-title"><div><div class="section-kicker">UPSTREAM / SOURCE-BACKED TIMELINE</div><h2>学习技术源更新<span class="accent">.</span></h2><p>仅展示已进入站点静态数据的审阅记录。</p></div></div>
+      <div class="section-heading resources-title"><div><h2>学习技术源更新<span class="accent">.</span></h2><p>仅展示已进入站点静态数据的审阅记录。</p></div></div>
       {updates.length===0
         ? <div class="watch-empty"><h2>尚无已发布的上游变化记录</h2><p>当前仓库中的技术观察基线仍为空。首次手动运行 GitHub Actions 并审核合并 PR 后会建立基线；后续变化经 PR 审查才出现在此。这里不会伪造更新时间。</p><a href="https://github.com/jyc-work/jyc-work.github.io/actions/workflows/tech-watch.yml" class="btn secondary" target="_blank" rel="noopener noreferrer">打开技术跟踪工作流 ↗</a></div>
         : <>
@@ -63,7 +63,7 @@ const days=Object.entries(updates.reduce((acc,entry)=>{
     </section>
 
     <section aria-label="网站开发动态">
-      <div class="section-heading resources-title"><div><div class="section-kicker">JYC / PUBLIC PROJECT CHANGELOG</div><h2>本站开发动态<span class="accent">.</span></h2><p>从 JYC 网站公开仓库按需获取最近提交。不涉及私有项目、生产指标或 AI 推测。</p></div></div>
+      <div class="section-heading resources-title"><div><h2>本站开发动态<span class="accent">.</span></h2><p>从 JYC 网站公开仓库按需获取最近提交。不涉及私有项目、生产指标或 AI 推测。</p></div></div>
       <div class="learning-progress-panel">
         <div class="progress-header"><strong>GitHub / jyc-work.github.io</strong><button class="progress-action" type="button" id="load-site-commits">获取最新公开提交 ↗</button></div>
         <p class="progress-note">点击后才会请求 GitHub 公共 API。访问次数受 GitHub 公开接口限流约束，失败不会影响网站其他内容。</p>
