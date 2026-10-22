@@ -7,8 +7,9 @@ for (const width of widths) {
   test(`all primary routes have no document-level overflow at ${width}px`, async ({page}) => {
     await page.setViewportSize({width, height: 760});
     for (const path of paths) {
-      await page.goto(path);
-      await expect(page.locator('h1')).toBeVisible();
+      const response = await page.goto(path);
+      expect(response?.status(), `Expected ${path} to return 200, got ${response?.status()} at ${page.url()}`).toBe(200);
+      await expect(page.locator('h1:visible').first(), `Missing visible page heading at ${path}`).toBeVisible();
       const documentWidth = await page.evaluate(() => document.documentElement.scrollWidth);
       expect(documentWidth, `Unexpected horizontal overflow on ${path} at ${width}px`).toBeLessThanOrEqual(width+2);
     }
