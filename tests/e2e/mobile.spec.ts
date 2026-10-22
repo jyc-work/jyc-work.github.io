@@ -171,7 +171,7 @@ test('night-city palette and original skyline are present',async ({page})=>{
   }));
   expect(cssValues.main).toBe('#50ddff');
   expect(cssValues.secondary).toBe('#ff4fab');
-  await expect(page.locator('.hero-telemetry')).toContainText('JYC-NIGHT');
+  await expect(page.locator('.hero-telemetry')).toHaveCount(0);
 });
 
 test('Chinese home and navigation do not show decorative English fragments', async ({page}) => {
