@@ -27,7 +27,7 @@ def scalar(meta: str, name: str) -> str:
 
 
 def evidence_links(meta: str) -> list[str]:
-    block = re.search(r"(?m)^evidence:\s*\n((?:\s+-\s+https://[^\n]+\n?)+)", meta)
+    block = re.search(r"(?m)^evidence:[^\n]*\n((?:[ \t]+-[ \t]+[^\n]+\n?)+)", meta)
     if not block:
         return []
     return [line.strip()[2:].strip().strip('"').strip("'") for line in block.group(1).splitlines()]
