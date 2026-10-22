@@ -1,6 +1,13 @@
 /* JYC visual simulation: decorative client-side behavior, no live infrastructure metrics. */
 type TerminalEvent = { kind: string; detail: string; state: string };
-const events: TerminalEvent[] = [
+const events: TerminalEvent[] = document.documentElement.lang === 'en' ? [
+  {kind:'BOOT', detail:'initialize example workflow', state:'DEMO'},
+  {kind:'INDEX', detail:'load articles and learning paths', state:'OK'},
+  {kind:'TOOLS', detail:'register available tools', state:'OK'},
+  {kind:'EVENT', detail:'record simulated tool call', state:'DEMO'},
+  {kind:'AGENT', detail:'prepare tool-loop example', state:'DEMO'},
+  {kind:'READY', detail:'await user interaction', state:'READY'}
+] : [
   {kind:'启动', detail:'初始化演示流程', state:'模拟'},
   {kind:'索引', detail:'读取文章与学习路线', state:'完成'},
   {kind:'工具', detail:'加载工具列表', state:'完成'},
@@ -61,7 +68,7 @@ function setFX(enabled:boolean, persist=false) {
   root.classList.toggle('fx-off',!fxEnabled);
   if(fxButton) {
     fxButton.setAttribute('aria-pressed',String(fxEnabled));
-    fxButton.textContent='动效：'+(fxEnabled?'开':'关');
+    fxButton.textContent=document.documentElement.lang === 'en' ? 'Effects: '+(fxEnabled?'On':'Off') : '动效：'+(fxEnabled?'开':'关');
     fxButton.title=fxEnabled?'关闭视觉特效':'开启视觉特效';
   }
   if(persist) safeSet(enabled?'on':'off');
