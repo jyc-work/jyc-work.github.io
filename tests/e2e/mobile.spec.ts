@@ -39,6 +39,34 @@ test('desktop navigation stays visible with mobile toggle hidden',async ({page})
   await expect(page.getByRole('button',{name:'打开导航菜单'})).toBeHidden();
 });
 
+test('Chinese navigation keeps four primary links and readable grouped resources',async({page})=>{
+  await page.setViewportSize({width:1280,height:800});
+  await page.goto('/');
+  const nav=page.getByRole('navigation',{name:'主导航'});
+  await expect(nav.locator(':scope > a')).toHaveCount(4);
+  const more=nav.locator('.nav-more');
+  await expect(nav.getByRole('link',{name:'命令手册'})).toBeHidden();
+  await more.locator('summary').click();
+  await expect(nav.getByRole('link',{name:'命令手册'})).toBeVisible();
+  await expect(nav.getByRole('link',{name:'技术动态'})).toBeVisible();
+  await expect(nav.getByRole('link',{name:'知识库'})).toBeVisible();
+  const fontSize=await nav.locator(':scope > a').first().evaluate((element)=>parseFloat(getComputedStyle(element).fontSize));
+  expect(fontSize).toBeGreaterThanOrEqual(16);
+  await page.keyboard.press('Escape');
+  await expect(nav.getByRole('link',{name:'命令手册'})).toBeHidden();
+});
+
+test('grouped resource links remain reachable on mobile',async({page})=>{
+  await page.setViewportSize({width:375,height:780});
+  await page.goto('/');
+  await page.getByRole('button',{name:'打开导航菜单'}).click();
+  const nav=page.getByRole('navigation',{name:'主导航'});
+  await nav.locator('.nav-more summary').click();
+  await nav.getByRole('link',{name:'知识库'}).click();
+  await expect(page).toHaveURL(/\/knowledge\/$/);
+  await expect(page.locator('.nav-more summary')).toHaveClass(/active/);
+});
+
 test('article toc, code copy and back-to-top work on small mobile viewport', async ({page,context})=>{
   await context.grantPermissions(['clipboard-read','clipboard-write']);
   await page.setViewportSize({width: 320, height: 680});
