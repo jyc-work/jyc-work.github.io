@@ -57,3 +57,11 @@ The [Agent design patterns tutorial](https://zhiwenliang.github.io/learning/agen
 ## Engineering command handbook
 
 Browse `/commands/` for Linux, Docker, Kubernetes, containerd, Hadoop, Git, Kafka, Flink, generic SQL, MySQL, ClickHouse, PostgreSQL, Redis and GaussDB. Commands are grouped by platform, tagged with version and security cautions, and integrated into the site search and sitemap. No financial or quant research content is published here.
+
+## Mobile compatibility
+
+- Collapsible accessible navigation on narrow screens (keyboard Escape closes the menu)
+- Expandable chapter table of contents on mobile reading pages
+- One-click code copying and scroll-to-top
+- Automated Chromium checks at 320, 375, 390 and 430px viewports, including menu, article controls and overflow
+- Run `npm run build && npx playwright install chromium && npm run test:e2e` locally
