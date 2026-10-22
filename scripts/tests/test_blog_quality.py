@@ -42,7 +42,7 @@ evidence:
   - "https://github.com/jyc-work/jyc-work.github.io/blob/%s/tests/e2e/mobile.spec.ts"
 ---
 """ % (REV, REV, REV)
-EN_BODY = "\\n".join([
+EN_BODY = "\n".join([
     "## Problem and scope", "The problem and constraints are documented. " * 50,
     "## Environment and versions", "The environment and dependency versions are documented. " * 35,
     "## Design", "The design and trade-offs are documented. " * 35,
