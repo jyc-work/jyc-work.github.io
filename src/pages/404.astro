@@ -1,6 +1,83 @@
 ---
-import Base from '../layouts/Base.astro';
+import '../styles/global.css';
+import '../styles/mobile.css';
 ---
-<Base title="页面不存在" description="您访问的页面不存在">
-  <section class="container not-found"><div class="page-eyebrow">404 · 页面不存在</div><h1>没有找到这个页面<span class="accent">.</span></h1><p>这个链接还没有对应页面，或者文章已经迁移。</p><a class="btn primary" href="/">返回首页 →</a></section>
-</Base>
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#080b19" />
+    <meta name="description" id="not-found-description" content="您访问的页面不存在。" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title id="not-found-title">页面不存在 · JYC 技术实验室</title>
+  </head>
+  <body>
+    <div class="site-shell">
+      <header class="site-header">
+        <div class="header-inner container">
+          <a class="brand" id="not-found-brand" href="/" aria-label="JYC 技术实验室首页">
+            <span class="brand-mark" aria-hidden="true">J<span class="brand-dot">.</span></span>
+            <span class="brand-copy"><strong>JYC</strong><small id="not-found-brand-subtitle">技术实验室</small></span>
+          </a>
+          <div class="header-actions"><a class="language-switch" id="not-found-language" href="/en/">English</a></div>
+        </div>
+      </header>
+      <main id="content">
+        <section id="not-found-zh" class="container not-found">
+          <div class="page-eyebrow">404 · 页面不存在</div>
+          <h1>没有找到这个页面<span class="accent">.</span></h1>
+          <p>这个链接还没有对应页面，或者文章已经迁移。</p>
+          <a class="btn primary" href="/">返回首页 →</a>
+        </section>
+        <section id="not-found-en" class="container not-found" hidden>
+          <div class="page-eyebrow">404 · PAGE NOT FOUND</div>
+          <h1>We couldn't find this page<span class="accent">.</span></h1>
+          <p>The link may be incorrect, or the page may have moved.</p>
+          <a class="btn primary" href="/en/">Back to home →</a>
+        </section>
+      </main>
+      <footer class="site-footer">
+        <div class="container footer-inner">
+          <div id="not-found-footer-zh">
+            <strong>JYC 技术实验室</strong>
+            <p>记录可解释的工程决策，分享可验证的技术成果。</p>
+          </div>
+          <div id="not-found-footer-en" hidden>
+            <strong>JYC Engineering Lab</strong>
+            <p>Engineering decisions explained. Technical work backed by evidence.</p>
+          </div>
+          <span class="copyright">© 2026 JYC</span>
+        </div>
+      </footer>
+    </div>
+    <script>
+      const english = window.location.pathname.startsWith('/en/');
+      const setHidden = (selector, hidden) => {
+        const element = document.querySelector(selector);
+        if (element) element.hidden = hidden;
+      };
+      document.documentElement.lang = english ? 'en' : 'zh-CN';
+      document.title = english ? 'Page not found | JYC Engineering Lab' : '页面不存在 · JYC 技术实验室';
+      const description = document.querySelector<HTMLMetaElement>('#not-found-description');
+      if (description) description.content = english ? 'The requested page could not be found.' : '您访问的页面不存在。';
+      setHidden('#not-found-zh', english);
+      setHidden('#not-found-en', !english);
+      setHidden('#not-found-footer-zh', english);
+      setHidden('#not-found-footer-en', !english);
+      const brand = document.querySelector<HTMLAnchorElement>('#not-found-brand');
+      if (brand) {
+        brand.href = english ? '/en/' : '/';
+        brand.setAttribute('aria-label', english ? 'JYC Engineering Lab home' : 'JYC 技术实验室首页');
+      }
+      const subtitle = document.querySelector<HTMLElement>('#not-found-brand-subtitle');
+      if (subtitle) subtitle.textContent = english ? 'ENGINEERING LAB' : '技术实验室';
+      const language = document.querySelector<HTMLAnchorElement>('#not-found-language');
+      if (language) {
+        language.href = english ? '/' : '/en/';
+        language.textContent = english ? 'Chinese' : 'English';
+        language.setAttribute('aria-label', english ? 'Switch to Chinese' : '切换到英文站');
+      }
+    </script>
+  </body>
+</html>
