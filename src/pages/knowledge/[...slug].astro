@@ -14,13 +14,13 @@ const {Content,headings} = await render(entry);
   <div class="container reader-grid">
     <article class="reading-article">
       <div class="breadcrumbs"><a href="/">首页</a><span>/</span><a href="/knowledge/">知识库</a><span>/</span><span>笔记</span></div>
-      <div class="page-eyebrow">KNOWLEDGE / INDEXED · {entry.data.date.toISOString().slice(0,10)}</div>
+      <div class="page-eyebrow">整理于 {entry.data.date.toISOString().slice(0,10)}</div>
       <h1>{entry.data.title}</h1><p class="article-intro">{entry.data.description}</p>
       {entry.data.source && <p class="source-alert">本文包含对外部公开资料的独立整理，<a href={entry.data.source} target="_blank" rel="noopener noreferrer">阅读原始来源 ↗</a></p>}
       <ReadingToc headings={headings} />
       <div class="prose"><Content /></div>
       <div class="article-end"><a href="/knowledge/">← 返回知识库</a></div>
     </article>
-    <aside class="toc" aria-label="本页目录"><div class="toc-title">ON THIS PAGE</div>{headings.filter((h)=>h.depth===2 || h.depth===3).map((h)=><a class:list={['toc-item',{'toc-nested':h.depth===3}]} href={`#${h.slug}`}>{h.text}</a>)}</aside>
+    <aside class="toc" aria-label="本页目录"><div class="toc-title">本文目录</div>{headings.filter((h)=>h.depth===2 || h.depth===3).map((h)=><a class:list={['toc-item',{'toc-nested':h.depth===3}]} href={`#${h.slug}`}>{h.text}</a>)}</aside>
   </div>
 </Base>
