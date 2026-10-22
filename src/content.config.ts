@@ -21,6 +21,18 @@ const blog = defineCollection({
   schema
 });
 
+const enBlog = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/en-blog' }),
+  schema: schema.extend({
+    kind: z.enum(['engineering-case', 'incident-analysis']),
+    verification: z.enum(['source-reviewed', 'runtime-tested', 'externally-reproduced']),
+    repository: z.string().url(),
+    revision: z.string().regex(/^[0-9a-f]{40}$/),
+    evidence: z.array(z.string().url()).min(2),
+    zhSlug: z.string().min(1)
+  })
+});
+
 const knowledge = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/knowledge' }),
   schema
@@ -39,4 +51,4 @@ const commands = defineCollection({
   })
 });
 
-export const collections = { blog, knowledge, commands };
+export const collections = { blog, enBlog, knowledge, commands };
