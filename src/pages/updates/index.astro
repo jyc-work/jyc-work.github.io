@@ -1,37 +1,129 @@
 ---
 import Base from '../../layouts/Base.astro';
 import feed from '../../data/tech-watch.json';
-const checkedDate = feed.checked_at == null ? '尚未运行' : String(feed.checked_at).slice(0, 10);
-const updates = feed.updates as Array<{
-  repository: string; domain: string; sha: string; url: string; subject: string;
+
+type UpstreamRecord = {
+  repository: string; domain: string; sha: string; previous_sha?: string; url: string; subject: string;
   observed_at: string; summary: string; impact: string; next_action: string;
   ai_provider: string; review_status: string;
-}>;
+};
+const checkedDate = feed.checked_at == null ? '从未完成基线' : String(feed.checked_at).replace('T',' ').slice(0,16) + ' UTC';
+const updates=(feed.updates as UpstreamRecord[]).slice().sort((a,b)=>b.observed_at.localeCompare(a.observed_at));
+const domains=[...new Set(updates.map(x=>x.domain))].sort();
+const days=Object.entries(updates.reduce((acc,entry)=>{
+  const date=entry.observed_at.slice(0,10) || '未记录日期';
+  (acc[date]??=[]).push(entry);
+  return acc;
+},{} as Record<string,UpstreamRecord[]>));
 ---
-<Base title="技术动态" description="JYC Engineering Lab：跟踪精选 GitHub 技术源，记录人工审核后的提交更新">
+<Base title="技术动态时间线" description="由 GitHub 原始提交驱动的技术动态时间线与网站公开开发记录">
   <div class="container listing-page">
-    <div class="page-eyebrow">TECH WATCH / SOURCE FIRST</div>
-    <h1>技术动态<span class="accent">.</span></h1>
-    <p class="page-lead">跟踪精选开源项目。GitHub Actions 定期对比上游提交，AI 仅辅助生成“可能影响与下一步学习动作”；内容经 PR 审核合并后才出现在网站。</p>
+    <div class="page-eyebrow">TECH WATCH / VERIFIED SOURCE LINKS</div>
+    <h1>技术动态时间线<span class="accent">.</span></h1>
+    <p class="page-lead">区分三件事：上游 GitHub 发生了提交、AI 提供了学习提示、技术影响是否经过复现实验。只有第一项由原始 Commit 直接证明。</p>
+
     <div class="watch-stats">
-      <div><span>跟踪仓库</span><strong>{feed.repository_count}</strong></div>
-      <div><span>已发布变更</span><strong>{updates.length}</strong></div>
-      <div><span>最近检查</span><strong class="watch-date">{checkedDate}</strong></div>
+      <div><span>持续跟踪学习仓库</span><strong>{feed.repository_count}</strong></div>
+      <div><span>已纳入站点的变更记录</span><strong>{updates.length}</strong></div>
+      <div><span>上次合并的检查快照</span><strong class="watch-date">{checkedDate}</strong></div>
     </div>
-    <div class="detail-note">记录中的 AI 说明是学习辅助材料，不等于已证实的兼容性变化或性能结论。每条信息以 GitHub 原始 Commit 为核验入口；自动化只创建 PR，不自行合并。</div>
-    {updates.length === 0
-      ? <div class="watch-empty"><h2>正在建立技术观察基线</h2><p>首次检查将记录八个仓库的版本快照。后续发生变化时，经审核的观察记录会出现在这里。即使没有配置 AI 密钥，版本变化仍能跟踪。</p><a href="/learning/" class="btn secondary">查看学习路线 →</a></div>
-      : <div class="watch-feed">{updates.map((item)=>(
-        <article class="watch-entry">
-          <div class="watch-entry-top"><span>{item.domain}</span><span>{item.observed_at.slice(0,10)}</span></div>
-          <h2>{item.repository}</h2>
-          <p class="watch-subject">上游提交：{item.subject}</p>
-          <p><strong>摘要：</strong>{item.summary}</p>
-          <p><strong>影响判断：</strong>{item.impact}</p>
-          <p><strong>建议行动：</strong>{item.next_action}</p>
-          <div class="watch-entry-foot"><span>辅助模型：{item.ai_provider}</span><span>{item.review_status}</span><a href={item.url} target="_blank" rel="noopener noreferrer">查看原始 Commit ↗</a></div>
-        </article>
-      ))}</div>
-    }
+
+    <div class="watch-origin-steps" aria-label="技术观察数据来源与处理流程">
+      <div><strong>01 / SOURCE</strong>GitHub 公开 Commit</div>
+      <div><strong>02 / DIFF</strong>比对仓库 HEAD SHA</div>
+      <div><strong>03 / AI DRAFT</strong>可选模型生成学习提示</div>
+      <div><strong>04 / REVIEW</strong>PR 合并后发布快照</div>
+    </div>
+    <p class="watch-review-disclaimer">提交记录与代码审查、可复现实验不是一回事。即使经过 PR 合并，AI 对影响范围的判断也不能自动视为事实。发布日期是本站观察记录时间，不是上游发布版本的时间。</p>
+
+    <section aria-label="上游技术变更">
+      <div class="section-heading resources-title"><div><div class="section-kicker">UPSTREAM / SOURCE-BACKED TIMELINE</div><h2>学习技术源更新<span class="accent">.</span></h2><p>仅展示已进入站点静态数据的审阅记录。</p></div></div>
+      {updates.length===0
+        ? <div class="watch-empty"><h2>尚无已发布的上游变化记录</h2><p>当前仓库中的技术观察基线仍为空。首次手动运行 GitHub Actions 并审核合并 PR 后会建立基线；后续变化经 PR 审查才出现在此。这里不会伪造更新时间。</p><a href="https://github.com/jyc-work/jyc-work.github.io/actions/workflows/tech-watch.yml" class="btn secondary" target="_blank" rel="noopener noreferrer">打开技术跟踪工作流 ↗</a></div>
+        : <>
+          <div class="watch-filter-bar">
+            <label for="watch-domain-filter">按技术领域筛选</label>
+            <select id="watch-domain-filter" aria-label="筛选技术动态领域"><option value="all">全部领域</option>{domains.map(d=><option value={d}>{d}</option>)}</select>
+            <span id="watch-filter-count" role="status" aria-live="polite">{updates.length} 条源记录</span>
+          </div>
+          <div class="watch-timeline">{days.map(([date,records])=><section class="watch-timeline-group" data-watch-group>
+            <h3 class="watch-timeline-date"><time datetime={date}>{date}</time></h3>
+            <div class="watch-timeline-entries">{records.map(item=><article class="watch-timeline-entry" data-watch-entry data-watch-domain={item.domain}>
+              <div class="watch-timeline-top"><span>{item.domain}</span><span>SHA / {item.sha.slice(0,10)}</span></div>
+              <h3>{item.repository}</h3>
+              <p><strong>提交标题：</strong>{item.subject}</p>
+              <p><strong>学习摘要：</strong>{item.summary}</p>
+              <p><strong>待核验的影响判断：</strong>{item.impact}</p>
+              <p><strong>建议验证：</strong>{item.next_action}</p>
+              <div class="watch-timeline-links"><a href={item.url} target="_blank" rel="noopener noreferrer">查看 GitHub 原始提交 ↗</a><span>摘要来源：{item.ai_provider === 'none' ? '仅原始提交' : 'AI 草稿 · '+item.ai_provider}</span><span>状态：已纳入站点 · 技术结论待独立验证</span></div>
+            </article>)}</div>
+          </section>)}</div>
+        </>
+      }
+    </section>
+
+    <section aria-label="网站开发动态">
+      <div class="section-heading resources-title"><div><div class="section-kicker">JYC / PUBLIC PROJECT CHANGELOG</div><h2>本站开发动态<span class="accent">.</span></h2><p>从 JYC 网站公开仓库按需获取最近提交。不涉及私有项目、生产指标或 AI 推测。</p></div></div>
+      <div class="learning-progress-panel">
+        <div class="progress-header"><strong>GitHub / jyc-work.github.io</strong><button class="progress-action" type="button" id="load-site-commits">获取最新公开提交 ↗</button></div>
+        <p class="progress-note">点击后才会请求 GitHub 公共 API。访问次数受 GitHub 公开接口限流约束，失败不会影响网站其他内容。</p>
+        <p class="progress-note" role="status" id="site-commits-status" aria-live="polite">尚未查询公开提交。</p>
+        <div class="watch-timeline-entries" id="site-commits"></div>
+      </div>
+    </section>
   </div>
+  <script>
+    const select=document.querySelector<HTMLSelectElement>('#watch-domain-filter');
+    const count=document.querySelector<HTMLElement>('#watch-filter-count');
+    const entries=[...document.querySelectorAll<HTMLElement>('[data-watch-entry]')];
+    const groups=[...document.querySelectorAll<HTMLElement>('[data-watch-group]')];
+    function filter(){
+      const selected=select?.value??'all';
+      let shown=0;
+      entries.forEach(entry=>{
+        const visible=selected==='all'||entry.dataset.watchDomain===selected;
+        entry.hidden=!visible;
+        if(visible)shown++;
+      });
+      groups.forEach(group=>{group.hidden=![...group.querySelectorAll<HTMLElement>('[data-watch-entry]')].some(x=>!x.hidden);});
+      if(count)count.textContent=`${shown} 条源记录`;
+    }
+    select?.addEventListener('change',filter);
+
+    const load=document.querySelector<HTMLButtonElement>('#load-site-commits');
+    const status=document.querySelector<HTMLElement>('#site-commits-status');
+    const holder=document.querySelector<HTMLElement>('#site-commits');
+    load?.addEventListener('click',async()=>{
+      if(!holder || !status) return;
+      load.disabled=true;status.textContent='正在从 GitHub 读取公开提交…';
+      try{
+        const response=await fetch('https://api.github.com/repos/jyc-work/jyc-work.github.io/commits?per_page=5',{
+          headers:{Accept:'application/vnd.github+json'}
+        });
+        if(!response.ok)throw new Error(`GitHub API HTTP ${response.status}`);
+        const data:unknown=await response.json();
+        if(!Array.isArray(data))throw new Error('返回格式不正确');
+        holder.replaceChildren();
+        for(const item of data.slice(0,5)){
+          if(!item||typeof item!=='object')continue;
+          const record=item as {sha?:unknown,html_url?:unknown,commit?:{message?:unknown,committer?:{date?:unknown}}};
+          if(typeof record.sha!=='string'||!/^[a-f0-9]{40}$/.test(record.sha))continue;
+          if(record.html_url!==`https://github.com/jyc-work/jyc-work.github.io/commit/${record.sha}`)continue;
+          const article=document.createElement('article');article.className='watch-timeline-entry';
+          const h=document.createElement('h3');h.textContent=typeof record.commit?.message==='string'?record.commit.message.split('\n')[0].slice(0,220):'公开提交';
+          const meta=document.createElement('p');const date=record.commit?.committer?.date;
+          const dateText=typeof date==='string' && !Number.isNaN(Date.parse(date))?new Date(date).toISOString().slice(0,10):'日期未知';
+          meta.textContent=`GitHub / ${dateText} · ${record.sha.slice(0,10)}`;
+          const a=document.createElement('a');a.href=record.html_url;a.target='_blank';a.rel='noopener noreferrer';a.textContent='查看原始 Commit ↗';
+          a.className='text-link';
+          article.append(h,meta,a);holder.append(article);
+        }
+        status.textContent=`已从 GitHub 公开 API 获取 ${holder.children.length} 条提交；不包含私有仓库内容。`;
+      }catch(err){
+        status.textContent='无法读取 GitHub：'+(err instanceof Error?err.message:'网络访问受限')+'。可直接访问公开仓库。';
+        holder.replaceChildren();
+        const a=document.createElement('a');a.href='https://github.com/jyc-work/jyc-work.github.io/commits/main/';a.textContent='前往 GitHub 查看提交 ↗';a.target='_blank';a.rel='noopener noreferrer';holder.append(a);
+      }finally{load.disabled=false;}
+    });
+  </script>
 </Base>
