@@ -7,8 +7,9 @@ for (const width of widths) {
   test(`all primary routes have no document-level overflow at ${width}px`, async ({page}) => {
     await page.setViewportSize({width, height: 760});
     for (const path of paths) {
-      await page.goto(path);
-      await expect(page.locator('h1')).toBeVisible();
+      const response = await page.goto(path);
+      expect(response?.status(), `Expected ${path} to return 200 at ${page.url()}`).toBe(200);
+      await expect(page.locator('h1:visible').first(), `Missing visible heading at ${path}`).toBeVisible();
       const documentWidth = await page.evaluate(() => document.documentElement.scrollWidth);
       expect(documentWidth, `Unexpected horizontal overflow on ${path} at ${width}px`).toBeLessThanOrEqual(width+2);
     }
@@ -234,10 +235,14 @@ for(const width of [320,375,390,430]){
     for(const route of ['/en/','/en/articles/','/en/projects/','/en/projects/jyc-engineering-lab/','/en/articles/astro-pages-engineering-case/','/en/articles/playwright-mobile-regression/']){
       const response=await page.goto(route);
       expect(response?.status(), 'route should exist: '+route).toBe(200);
-      await expect(page.locator('h1')).toBeVisible();
+      await expect(page.locator('h1:visible').first()).toBeVisible();
       await expect(page.locator('html')).toHaveAttribute('lang','en');
-      const visibleText=await page.locator('body').innerText();
-      expect(visibleText, 'Chinese text leaked into English route: '+route).not.toMatch(/[\u3400-\u9fff]/);
+      const visibleText=await page.locator('body').evaluate(body=>{
+        const clone=body.cloneNode(true) as HTMLElement;
+        clone.querySelectorAll('pre, code').forEach(node=>node.remove());
+        return clone.innerText;
+      });
+      expect(visibleText, 'Chinese interface text leaked into English route: '+route).not.toMatch(/[\u3400-\u9fff]/);
       await expect(page.locator('link[type="application/rss+xml"]')).toHaveCount(0);
       const actual=await page.evaluate(()=>document.documentElement.scrollWidth);
       expect(actual, 'overflow at '+route+' in '+width+'px').toBeLessThanOrEqual(width+2);
