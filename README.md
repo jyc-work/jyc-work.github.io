@@ -104,3 +104,15 @@ The blog publishes only source-backed engineering case studies and incident anal
 The publication gate is editorial automation, not a technical truth oracle; human review remains necessary.
 
 Run locally: `python3 scripts/blog_quality.py && python3 -m unittest discover -s scripts/tests -v && npm run build && npm run test:e2e`.
+
+## English site and bilingual publishing
+
+- The Chinese site remains the default at `/`. The English pilot is served from `/en/` in the same Astro project and GitHub Pages deployment.
+- English copy lives in `src/content/blog-en/` and uses the separate `blogEn` content collection. Chinese originals remain in `src/content/blog/`; no bulk translation or language fallback is used.
+- Only pages with a reviewed translation expose reciprocal `hreflang` links. The homepage, article index, projects index, and the two pilot case studies have explicit Chinese/English pairs.
+- The canonical URL is emitted per page. `/sitemap.xml` lists both languages and includes alternate-language links for paired pages.
+- `/rss.xml` remains the Chinese feed. The English pages do not advertise the Chinese RSS feed.
+- The English pilot currently contains two source-reviewed engineering case studies. `source-reviewed` means the pinned source and test definitions are inspectable; it does not imply that every described experiment was independently rerun.
+- CI tests that English routes render without Chinese interface text, language switching reaches a valid counterpart, mobile navigation works, and the sitemap includes language alternates.
+
+To add an English article, create a Markdown file under `src/content/blog-en/` using the same evidence metadata as the Chinese collection. Keep the same filename only when a corresponding Chinese article exists; otherwise the English article's language switch returns to the English index rather than a broken URL.
