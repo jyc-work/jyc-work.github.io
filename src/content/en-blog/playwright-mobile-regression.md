@@ -38,7 +38,7 @@ npm run test:e2e
 
 In CI, the browser installation also includes operating-system dependencies. Test execution and site publication are different workflow stages; failing a test should block publication, not merely produce a warning.
 
-The pinned \`playwright.config.ts\` is the reference for web-server launch and test settings. Report the exact browser version and dependency resolution when publishing an observed result.
+The pinned `playwright.config.ts` is the reference for web-server launch and test settings. Report the exact browser version and dependency resolution when publishing an observed result.
 
 ## Design: test user outcomes, not implementation decorations
 
