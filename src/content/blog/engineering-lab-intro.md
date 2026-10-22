@@ -2,6 +2,7 @@
 title: "为什么建立 JYC Engineering Lab"
 description: "从散落的技术笔记出发，建立带有来源、证据与工程验证状态的公开作品集。"
 date: 2026-10-22
+draft: true
 tags: ["Engineering", "Knowledge Base", "Portfolio"]
 ---
 
