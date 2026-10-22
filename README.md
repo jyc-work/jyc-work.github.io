@@ -104,3 +104,9 @@ The blog publishes only source-backed engineering case studies and incident anal
 The publication gate is editorial automation, not a technical truth oracle; human review remains necessary.
 
 Run locally: `python3 scripts/blog_quality.py && python3 -m unittest discover -s scripts/tests -v && npm run build && npm run test:e2e`.
+
+## Curated bilingual portfolio
+
+Chinese remains the default at `/`. Independently edited English work lives at `/en/` in the same Astro codebase. Only real English pages are linked from locale switches; untranslated notes do not pretend to have translations.
+
+Each English engineering article includes a `zhSlug`, exact source revision, verification level, and traceable evidence. The publishing gate validates the Chinese counterpart and the pinned revision. Run `python3 scripts/check_en_publication.py` or the main CI workflow. No machine bulk-translation service, extra host, or backend is needed.

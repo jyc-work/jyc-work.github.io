@@ -186,3 +186,65 @@ test('Chinese home and navigation do not show decorative English fragments', asy
   await expect(page.locator('.listing-meta')).toContainText('篇文章');
   await expect(page.locator('.listing-meta a[href="/rss.xml"]')).toHaveCount(0);
 });
+
+
+test('Chinese and English home are reciprocal with canonical language metadata',async({page})=>{
+  await page.setViewportSize({width:375,height:780});
+  await page.goto('/');
+  await expect(page.locator('html')).toHaveAttribute('lang','zh-CN');
+  await expect(page.locator('link[hreflang="en"]')).toHaveAttribute('href','https://jyc-work.github.io/en/');
+  await page.getByRole('link',{name:'View the English version'}).click();
+  await expect(page).toHaveURL(/\/en\/$/);
+  await expect(page.locator('html')).toHaveAttribute('lang','en');
+  await expect(page.locator('h1')).toContainText('Engineering');
+  await page.getByRole('button',{name:'Open navigation menu'}).click();
+  await expect(page.getByRole('navigation',{name:'Main navigation'})).toBeVisible();
+  await page.keyboard.press('Escape');
+  await expect(page.getByRole('navigation',{name:'Main navigation'})).toBeHidden();
+  await expect(page.locator('link[type="application/rss+xml"]')).toHaveAttribute('title','JYC Technical Blog RSS');
+  await page.getByRole('link',{name:'Read in Chinese'}).click();
+  await expect(page).toHaveURL(/\/$/);
+  await expect(page.locator('html')).toHaveAttribute('lang','zh-CN');
+});
+
+test('English articles have public evidence, localized TOC, working copy, and real Chinese counterparts',async({page,context})=>{
+  await context.grantPermissions(['clipboard-read','clipboard-write']);
+  await page.setViewportSize({width:390,height:780});
+  await page.goto('/en/articles/');
+  await expect(page.locator('.article-row')).toHaveCount(2);
+  await page.locator('.article-row').first().click();
+  await expect(page.locator('html')).toHaveAttribute('lang','en');
+  await expect(page.getByText('Verification:',{exact:false}).first()).toBeVisible();
+  await expect(page.locator('link[hreflang="zh-CN"]')).toHaveAttribute('href',/\/blog\//);
+  const toc=page.locator('.mobile-reading-toc');
+  await expect(toc).toBeVisible();
+  await toc.locator('summary').click();
+  await expect(toc.locator('summary')).toContainText('Contents');
+  const copy=page.getByRole('button',{name:'Copy code'}).first();
+  await copy.click();
+  await expect(copy).toHaveText('Copied');
+  await page.getByRole('link',{name:'Read in Chinese'}).click();
+  await expect(page).toHaveURL(/\/blog\/(astro-pages-engineering-case|playwright-mobile-regression)\/$/);
+  await expect(page.locator('html')).toHaveAttribute('lang','zh-CN');
+});
+
+for(const width of [320,375,390,430]){
+  test('English routes do not overflow at '+width+'px',async({page})=>{
+    await page.setViewportSize({width,height:760});
+    for(const route of ['/en/','/en/articles/','/en/projects/','/en/projects/jyc-engineering-lab/','/en/articles/astro-pages-engineering-case/','/en/articles/playwright-mobile-regression/']){
+      await page.goto(route);
+      await expect(page.locator('h1')).toBeVisible();
+      await expect(page.locator('html')).toHaveAttribute('lang','en');
+      const actual=await page.evaluate(()=>document.documentElement.scrollWidth);
+      expect(actual, 'overflow at '+route+' in '+width+'px').toBeLessThanOrEqual(width+2);
+    }
+  });
+}
+
+test('No misleading English version switch on untranslated Chinese pages',async({page})=>{
+  await page.goto('/learning/');
+  await expect(page.locator('.lang-switch')).toHaveCount(0);
+  await page.goto('/en/projects/jyc-engineering-lab/');
+  await expect(page.getByRole('link',{name:'Read in Chinese'})).toHaveAttribute('href','/projects/jyc-engineering-lab/');
+  await expect(page.getByRole('navigation',{name:'Main navigation'})).toBeVisible();
+});
