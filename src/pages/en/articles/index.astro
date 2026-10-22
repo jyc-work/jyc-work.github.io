@@ -1,0 +1,18 @@
+---
+import Base from '../../../layouts/Base.astro';
+import { getCollection } from 'astro:content';
+const posts = (await getCollection('enBlog', ({data})=>!data.draft))
+  .sort((a,b)=>b.data.date.getTime()-a.data.date.getTime());
+---
+<Base lang="en" title="Engineering articles" description="Original English-language engineering case studies with pinned sources and transparent verification boundaries.">
+  <div class="container listing-page">
+    <h1>Engineering articles<span class="accent">.</span></h1>
+    <p class="page-lead">Case studies built around real source files, test contracts, implementation decisions, and limitations. These are independently edited English editions, not automatic translations of every Chinese note.</p>
+    <div class="listing-meta"><span>{posts.length} published case studies</span></div>
+    <div class="article-list">{posts.map((post,i)=><a class="article-row" href={\`/en/articles/\${post.id}/\`}>
+      <span class="article-index">{String(i+1).padStart(2,'0')}</span>
+      <div class="article-row-main"><h3>{post.data.title}</h3><p>{post.data.description}</p><div class="tags">{post.data.tags.map(tag=><span>{tag}</span>)}</div></div>
+      <span class="article-date">{post.data.date.toISOString().slice(0,10)}</span><span class="article-go">↗</span>
+    </a>)}</div>
+  </div>
+</Base>
