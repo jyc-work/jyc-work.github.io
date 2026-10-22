@@ -22,7 +22,7 @@ FEED = ROOT / "src/data/tech-watch.json"
 MAX_CHANGES = 3
 MAX_HISTORY = 24
 MAX_CHARS = 1500
-ALLOWED_REPO = re.compile(r"^(?!\\.\\.?/)[A-Za-z0-9_.-]+/(?!\\.{1,2}$)[A-Za-z0-9_.-]+$")
+ALLOWED_REPO = re.compile(r"^[A-Za-z0-9_-][A-Za-z0-9_.-]*/[A-Za-z0-9_-][A-Za-z0-9_.-]*$")
 
 
 def utc_now() -> str:
