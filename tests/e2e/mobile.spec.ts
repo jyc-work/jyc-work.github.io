@@ -42,7 +42,7 @@ test('desktop navigation stays visible with mobile toggle hidden',async ({page})
 test('article toc, code copy and back-to-top work on small mobile viewport', async ({page,context})=>{
   await context.grantPermissions(['clipboard-read','clipboard-write']);
   await page.setViewportSize({width: 320, height: 680});
-  await page.goto('/blog/agent-loop-reliability/');
+  await page.goto('/blog/astro-pages-engineering-case/');
   const toc = page.locator('.mobile-reading-toc');
   await expect(toc).toBeVisible();
   await toc.locator('summary').click();
