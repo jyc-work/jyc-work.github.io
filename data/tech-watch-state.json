@@ -1,1 +1,10 @@
-{}
+{
+  "shareAI-lab/learn-claude-code": "ce8f9f186058939da54c9d6fead78dfb5d0fd6c3",
+  "earendil-works/pi": "74f46864025c68504cd10c89eeb626b7e3d64cea",
+  "Snailclimb/JavaGuide": "50f02a5984c062fe7221629d0a6a40ec15c26fd7",
+  "spring-projects/spring-boot": "e5e959e3b66bba353aa87f49d9b8036ebb63f0dc",
+  "apache/kafka": "0290810b879fc7c965991a02288d444b0347fcba",
+  "apache/flink": "8d01380ff5bf9892462ef9808b1b56fd9723f54d",
+  "fullstack-hy2020/fullstack-hy2020.github.io": "9c24482abcf387699d0f36bcdff5811dbe2ce5a7",
+  "donnemartin/system-design-primer": "ae9bbd7b02d90b9866215de185217d33f39ab733"
+}
