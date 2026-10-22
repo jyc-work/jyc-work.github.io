@@ -1,0 +1,49 @@
+/* Curated English edition: shared Night Circuit visual system, no duplicate theme. */
+.lang-switch{
+  display:inline-flex;align-items:center;justify-content:center;
+  min-height:44px;min-width:49px;padding:9px 12px;
+  font:750 12px/1 ui-monospace,SFMono-Regular,Consolas,monospace;
+  letter-spacing:.05em;
+  color:#85efff;background:#151a34;border:1px solid #4f6496;
+  border-radius:5px;white-space:nowrap;
+}
+.lang-switch:hover,.lang-switch:focus-visible{
+  color:#071421;background:#7ceafd;border-color:#7ceafd;
+}
+.en-hero .hero-copy{max-width:630px;}
+.en-hero .hero-desc{font-size:15px;line-height:1.9;max-width:560px;}
+.en-hero .hero-zh{font-size:18px;}
+.en-hero .hero-visual{position:relative;}
+.en-hero .night-city-art{opacity:.82;}
+.en-terminal{max-width:510px;transform:translate(-50%,-50%) rotate(-1deg);}
+.en-terminal .terminal-body{min-height:0;padding:26px 22px;}
+.en-terminal .terminal-body>div{font-size:12px;line-height:2.3;white-space:normal;}
+.en-featured-project{max-width:720px;min-height:345px;}
+.en-featured-project h3{font-size:25px;}
+.en-featured-project p{max-width:620px;}
+html[lang="en"] .prose{line-height:1.9;}
+html[lang="en"] .prose h2{letter-spacing:-.02em;}
+html[lang="en"] .reader-grid .source-alert{margin:10px 0 18px;}
+html[lang="en"] .prose li{padding-left:2px;}
+html[lang="en"] .detail-section a{color:#84e6fc;text-decoration:underline;text-underline-offset:3px;}
+@media(max-width:780px){
+ .header-actions{gap:8px;}
+ .lang-switch{min-width:44px;padding:8px;}
+ .en-hero .hero-copy{padding-bottom:4px;}
+ .en-hero .hero-visual{height:375px;}
+ .en-terminal{transform:translate(-50%,-50%);width:min(96%,510px);}
+}
+@media(max-width:560px){
+ .en-hero h1{font-size:clamp(36px,10vw,51px);overflow-wrap:normal;}
+ .en-hero .hero-zh{font-size:16px;}
+ .en-hero .hero-visual{height:345px;}
+ .en-terminal{width:100%;}
+ .en-terminal .terminal-body{padding:14px 12px;}
+ .en-terminal .terminal-body>div{font-size:10px;white-space:normal;line-height:2.2;}
+ .en-featured-project{min-height:310px;}
+}
+@media(max-width:359px){
+ .lang-switch{font-size:11px;min-width:39px;padding:7px;}
+ .header-actions{gap:5px;}
+ .en-hero h1{font-size:35px;}
+}
