@@ -46,7 +46,7 @@ const posts = (await getCollection('enBlog', ({data})=>!data.draft))
   </section>
   <section class="section section-muted"><div class="container">
     <div class="section-heading"><div><div class="section-kicker">Engineering writing</div><h2>Case studies<span class="accent">.</span></h2><p>English editions are curated individually, not generated for every Chinese note.</p></div><a class="text-link" href="/en/articles/">All articles ↗</a></div>
-    <div class="article-list">{posts.map((post,i)=><a class="article-row" href={\`/en/articles/\${post.id}/\`}>
+    <div class="article-list">{posts.map((post,i)=><a class="article-row" href={`/en/articles/${post.id}/`}>
       <span class="article-index">{String(i+1).padStart(2,'0')}</span>
       <div class="article-row-main"><h3>{post.data.title}</h3><p>{post.data.description}</p><div class="tags">{post.data.tags.map(tag=><span>{tag}</span>)}</div></div>
       <span class="article-date">{post.data.date.toISOString().slice(0,10)}</span><span class="article-go">↗</span>
