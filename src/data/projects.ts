@@ -16,6 +16,30 @@ export type Project = {
 
 export const projects: Project[] = [
   {
+    slug: 'jyc-engineering-lab',
+    name: 'JYC Engineering Lab',
+    category: 'Static Publishing · Quality Engineering',
+    summary: '基于 Astro 的公开技术站：内容集合、可访问性、移动端浏览器回归与 GitHub Pages 自动构建和发布。',
+    status: '公开源码 · 工程证据可查',
+    visibility: '公开源码',
+    stack: ['Astro', 'TypeScript', 'GitHub Actions', 'Playwright'],
+    challenge: '如何让持续演进的博客与知识库保持可审查、可测试并具备回归防护？',
+    approach: '拆分 PR 构建与 Pages 部署，加入类型检查、浏览器级交互回归、技术跟踪的单元测试，并为正式文章设置发布证据门禁。',
+    evidence: [
+      '静态构建与部署工作流：.github/workflows/pages.yml',
+      '浏览器回归测试：tests/e2e/mobile.spec.ts',
+      '源码基线及工程复盘：技术博客中的 JYC 网站案例'
+    ],
+    limitations: [
+      'Chromium 回归不等于全部浏览器及真实手机验证',
+      '源码与 CI 结构可查；实时线上可用性仍需独立核验',
+      '构建依赖锁定与故障回滚还可继续强化'
+    ],
+    source: 'https://github.com/jyc-work/jyc-work.github.io',
+    kind: 'original'
+  },
+
+  {
     slug: 'dataops-copilot',
     name: 'DataOps Copilot V1',
     category: 'Agent × Data Engineering',
