@@ -38,7 +38,9 @@ const chineseLinks = [
   { href: '/', label: '首页' },
   { href: '/blog/', label: '技术文章' },
   { href: '/projects/', label: '项目作品' },
-  { href: '/learning/', label: '学习路线' },
+  { href: '/learning/', label: '学习路线' }
+];
+const chineseMoreLinks = [
   { href: '/commands/', label: '命令手册' },
   { href: '/updates/', label: '技术动态' },
   { href: '/knowledge/', label: '知识库' }
@@ -49,6 +51,7 @@ const englishLinks = [
   { href: '/en/projects/', label: 'Projects' }
 ];
 const links = isEnglish ? englishLinks : chineseLinks;
+const moreActive = chineseMoreLinks.some((link) => current.startsWith(link.href));
 const menuOpen = isEnglish ? 'Open navigation menu' : '打开导航菜单';
 const menuClose = isEnglish ? 'Close navigation menu' : '关闭导航菜单';
 ---
@@ -85,6 +88,12 @@ const menuClose = isEnglish ? 'Close navigation menu' : '关闭导航菜单';
             {links.map((link) => (
               <a href={link.href} class:list={['nav-link', { active: (link.href === '/' || link.href === '/en/') ? current === link.href : current.startsWith(link.href) }]} aria-current={((link.href === '/' || link.href === '/en/') ? current === link.href : current.startsWith(link.href)) ? 'page' : undefined}>{link.label}</a>
             ))}
+            {!isEnglish && <details class="nav-more">
+              <summary class:list={['nav-link', { active: moreActive }]}>更多<span class="nav-chevron" aria-hidden="true">⌄</span></summary>
+              <div class="nav-more-panel">
+                {chineseMoreLinks.map((link) => <a href={link.href} class:list={['nav-link', { active: current.startsWith(link.href) }]} aria-current={current.startsWith(link.href) ? 'page' : undefined}>{link.label}</a>)}
+              </div>
+            </details>}
           </nav>
           <div class="header-actions">
             {!isEnglish && <a class="header-search" href="/search/" aria-label="搜索文章"><span aria-hidden="true">⌕</span> <span>搜索</span><kbd>/</kbd></a>}
@@ -125,6 +134,7 @@ const menuClose = isEnglish ? 'Close navigation menu' : '关闭导航菜单';
       import '../scripts/cyberpunk';
       const menuButton = document.querySelector<HTMLButtonElement>('.mobile-menu-toggle');
       const menu = document.querySelector<HTMLElement>('#primary-navigation');
+      const moreMenu = document.querySelector<HTMLDetailsElement>('.nav-more');
       const mobileViewport = window.matchMedia('(max-width: 780px)');
       const closeMenu = (restoreFocus = false) => {
         if (!menuButton || !menu) return;
@@ -132,6 +142,7 @@ const menuClose = isEnglish ? 'Close navigation menu' : '关闭导航菜单';
         menuButton.setAttribute('aria-expanded', 'false');
         menuButton.setAttribute('aria-label', menuButton.dataset.labelOpen ?? '打开导航菜单');
         menu.classList.remove('is-open');
+        if (moreMenu) moreMenu.open = false;
         if (restoreFocus && wasOpen) menuButton.focus();
       };
       menuButton?.addEventListener('click', () => {
@@ -143,6 +154,7 @@ const menuClose = isEnglish ? 'Close navigation menu' : '关闭导航菜单';
       });
       menu?.querySelectorAll('a').forEach(link => link.addEventListener('click', () => closeMenu()));
       document.addEventListener('pointerdown', (event) => {
+        if (moreMenu?.open && event.target instanceof Node && !moreMenu.contains(event.target)) moreMenu.open = false;
         if (menuButton?.getAttribute('aria-expanded') !== 'true') return;
         if (!(event.target instanceof Node) || !event.target.parentElement?.closest('.site-header')) closeMenu();
       });
@@ -182,6 +194,10 @@ const menuClose = isEnglish ? 'Close navigation menu' : '关闭导航菜单';
       }));
 
       document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && moreMenu?.open) {
+          moreMenu.open = false;
+          moreMenu.querySelector('summary')?.focus();
+        }
         if (event.key === 'Escape' && menuButton?.getAttribute('aria-expanded') === 'true') {
           event.preventDefault();
           closeMenu(true);
