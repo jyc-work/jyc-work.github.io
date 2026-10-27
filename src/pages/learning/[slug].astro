@@ -1,10 +1,12 @@
 ---
 import Base from '../../layouts/Base.astro';
 import { learningPaths, type LearningPath } from '../../data/learning';
+import { getCollection } from 'astro:content';
 export function getStaticPaths(){
   return learningPaths.map((path)=>({params:{slug:path.slug},props:{path}}));
 }
 const { path }=Astro.props as { path: LearningPath };
+const lessons=(await getCollection('tutorials',({data})=>!data.draft && data.track===path.slug)).sort((a,b)=>a.data.order-b.data.order);
 ---
 <Base title={path.title} description={path.summary}>
   <div class="container listing-page">
@@ -19,6 +21,10 @@ const { path }=Astro.props as { path: LearningPath };
       <p id="learning-storage-status" class="progress-note" role="status" aria-live="polite"></p>
     </section>
 
+    <section class="roadmap-lessons">
+      <div class="section-heading resources-title"><div><h2>课程正文<span class="accent">.</span></h2><p>本路线已有 {lessons.length} 篇独立原创讲义，包含实验、代码与验收。</p></div><a href="/tutorials/" class="text-link">全部教程 ↗</a></div>
+      <div class="tutorial-lesson-list">{lessons.map((lesson,i)=><a href={`/tutorials/${lesson.id}/`} class="tutorial-lesson-card"><span class="tutorial-lesson-number">{String(i+1).padStart(2,'0')}</span><div><h3>{lesson.data.title}</h3><p>{lesson.data.description}</p><div class="tags"><span>{lesson.data.level}</span><span>{lesson.data.duration}</span></div></div><span aria-hidden="true">↗</span></a>)}</div>
+    </section>
     <div class="section-heading resources-title"><div><h2>四阶段路线<span class="accent">.</span></h2><p>不设强制时间，每阶段自行完成并核对验收标准。</p></div></div>
     <div class="stage-list">{path.stages.map((stage,index)=><section class="stage-card">
       <div class="stage-head"><span>{stage.duration}</span><h3>{stage.name}</h3></div>
