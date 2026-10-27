@@ -42,7 +42,6 @@ export const learningPaths: LearningPath[] = [
     ],
     repositories:[
       {name:'Snailclimb/JavaGuide',url:'https://github.com/Snailclimb/JavaGuide',purpose:'系统梳理 Java、JVM、并发、数据库和后端面试知识',task:'每周做一个并发或事务可复现样例',level:'基础 → 中级'},
-      {name:'spring-projects/spring-boot',url:'https://github.com/spring-projects/spring-boot',purpose:'通过官方源码学习自动配置、健康检查和框架边界',task:'沿着自动配置与 Actuator 追踪一次请求链路',level:'中级 → 深入'}
     ],
     outcome:'交付带数据库事务、幂等保障、可观测性和 CI 的 Spring Boot 示例服务。'
   },
@@ -59,7 +58,6 @@ export const learningPaths: LearningPath[] = [
     ],
     repositories:[
       {name:'apache/kafka',url:'https://github.com/apache/kafka',purpose:'阅读消费者组、分区分配和日志存储机制',task:'搭建消费者实例失效与分区倾斜实验',level:'中级 → 深入'},
-      {name:'apache/flink',url:'https://github.com/apache/flink',purpose:'研究流处理、状态、Checkpoint 和背压机制',task:'用固定输入模拟背压和故障恢复',level:'中级 → 深入'}
     ],
     outcome:'交付一套可重放输入、故障注入、指标解释和恢复验证的数据管道样例。'
   },
@@ -94,6 +92,23 @@ export const learningPaths: LearningPath[] = [
       {name:'donnemartin/system-design-primer',url:'https://github.com/donnemartin/system-design-primer',purpose:'系统学习大规模服务的架构概念和设计练习',task:'选择一个服务写容量估算、三类故障和替代方案',level:'基础 → 深入'}
     ],
     outcome:'交付可审查的系统架构设计文档、风险清单和验证计划。'
+  }
+  {
+    slug:'llm-engineering',title:'LLM 原理与工程',subtitle:'CS336 / Transformer / Training / Inference',
+    summary:'用最小可运行实验理解 Tokenizer、Transformer、训练系统、评估和推理，将模型机制与 Agent 工程联系起来。',
+    audience:'有 Python 编程能力，希望理解大模型底层原理的工程师。',
+    prerequisite:'Python、矩阵乘法和概率基础；最好先熟悉 PyTorch 张量与自动求导。',
+    stages:[
+      {name:'分词与模型结构',duration:'阶段 01',focus:['BPE、词表、Unicode 与编码边界','Embedding、自注意力、位置编码与因果掩码'],deliverable:'玩具 Tokenizer + 因果 Attention 单元测试',acceptance:'相同文本能编码与解码；未来 Token 不泄漏'},
+      {name:'最小训练与调试',duration:'阶段 02',focus:['交叉熵、Teacher Forcing、优化器和训练循环','训练/验证切分、梯度、过拟合单 batch'],deliverable:'小语料 next-token 训练脚本',acceptance:'能记录 loss 并证明可复现的训练过程，无验证集泄漏'},
+      {name:'资源与系统效率',duration:'阶段 03',focus:['显存核算、FLOPs、混合精度与梯度累积','KV Cache、吞吐与延迟、实验性能基线'],deliverable:'资源预算表与推理对照实验',acceptance:'标明 batch、sequence、dtype、硬件和测量方法'},
+      {name:'数据、评估与对齐',duration:'阶段 04',focus:['数据去重、PII、污染与语料切分','基准评估、统计波动、SFT/DPO/RLVR 基本思路'],deliverable:'固定测试集的评估报告和局限说明',acceptance:'区分样本内结果与泛化能力，能说明质量与成本权衡'}
+    ],
+    repositories:[
+      {name:'datawhalechina/diy-llm',url:'https://github.com/datawhalechina/diy-llm',purpose:'按中文章节与六项作业系统学习 Stanford CS336 相关主题',task:'从 BPE、架构开始，逐章完成自己的最小实现并对照项目材料',level:'进阶'},
+      {name:'weiruihhh/cs336_note_and_hw',url:'https://github.com/weiruihhh/cs336_note_and_hw',purpose:'参考独立课程笔记及作业实现过程，注意作者自述的未完善部分',task:'为同一道实验独立设计测试，不直接照搬解答',level:'进阶'}
+    ],
+    outcome:'能独立解释核心模型组件，并交付玩具模型、训练日志、资源预算与最小评估。'
   }
 ];
 export const featuredRepositories = learningPaths.flatMap(path=>path.repositories.map(repo=>({...repo,domain:path.title})));
