@@ -1,13 +1,15 @@
 ---
 import Base from '../../layouts/Base.astro';
 import { learningPaths, featuredRepositories } from '../../data/learning';
+import { getCollection } from 'astro:content';
+const lessons=await getCollection('tutorials',({data})=>!data.draft);
 const stageCount=learningPaths.reduce((sum,path)=>sum+path.stages.length,0);
 ---
-<Base title="技术学习路线" description="五个领域的工程学习路线与八个精选开源学习项目">
+<Base title="技术学习路线" description="六个领域的原创教程、工程学习路线与八个精选开源项目">
   <div class="container listing-page">
     
     <h1>技术学习路线<span class="accent">.</span></h1>
-    <p class="page-lead">从可运行的最小实现开始，逐步补齐原理、故障处理、测试和可复现的成果。覆盖 5 个领域，精选 GitHub 项目总计 8 个。</p>
+    <p class="page-lead">从可运行的最小实现开始，逐步补齐原理、故障处理、测试和可复现的成果。覆盖 6 个领域和原创实操教程，GitHub 精选项目保持 8 个。</p>
 
     <section class="learning-progress-panel" aria-label="个人学习进度面板">
       <div class="progress-header"><strong>个人学习进度</strong><span id="learning-progress-total" class="progress-total-label">0 / {stageCount}</span></div>
@@ -21,11 +23,13 @@ const stageCount=learningPaths.reduce((sum,path)=>sum+path.stages.length,0);
       <p id="learning-storage-status" class="progress-note" role="status" aria-live="polite"></p>
     </section>
 
+    <div class="learning-tutorial-intro"><div><strong>新上线：可阅读、可练习的正文教程</strong><p>不仅有路线表：包含原理讲解、可运行的代码示例、实验设计、错误分析、验收题。当前收录 {lessons.length} 篇独立原创教程。</p></div><a href="/tutorials/" class="btn primary">阅读完整教程 →</a></div>
+
     <div class="roadmap-grid">
       {learningPaths.map((path,i)=><a href={`/learning/${path.slug}/`} class="roadmap-card" data-progress-slug={path.slug} data-progress-total={path.stages.length}>
         <div class="roadmap-top"><span>路线 {String(i+1).padStart(2,'0')}</span><span>↗</span></div>
         <div class="roadmap-subtitle">{path.subtitle}</div><h2>{path.title}</h2><p>{path.summary}</p>
-        <div class="roadmap-footer"><span>{path.stages.length} 个阶段</span><span>{path.repositories.length} 个 GitHub 项目</span></div>
+        <div class="roadmap-footer"><span>{path.stages.length} 个阶段</span><span>{path.repositories.length} 个 GitHub 项目 · {lessons.filter(l=>l.data.track===path.slug).length} 篇教程</span></div>
         <div class="roadmap-progress"><div class="roadmap-progress-label"><span>已完成</span><span data-progress-label>0 / {path.stages.length} 阶段</span></div><progress class="learning-meter" max={path.stages.length} value="0" aria-label={`${path.title} 个人学习进度`}></progress></div>
       </a>)}
     </div>
