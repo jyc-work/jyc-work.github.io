@@ -92,7 +92,7 @@ export const learningPaths: LearningPath[] = [
       {name:'donnemartin/system-design-primer',url:'https://github.com/donnemartin/system-design-primer',purpose:'系统学习大规模服务的架构概念和设计练习',task:'选择一个服务写容量估算、三类故障和替代方案',level:'基础 → 深入'}
     ],
     outcome:'交付可审查的系统架构设计文档、风险清单和验证计划。'
-  }
+  },
   {
     slug:'llm-engineering',title:'LLM 原理与工程',subtitle:'CS336 / Transformer / Training / Inference',
     summary:'用最小可运行实验理解 Tokenizer、Transformer、训练系统、评估和推理，将模型机制与 Agent 工程联系起来。',
