@@ -12,15 +12,7 @@
     "domain": "Java Backend"
   },
   {
-    "repo": "spring-projects/spring-boot",
-    "domain": "Java Backend"
-  },
-  {
     "repo": "apache/kafka",
-    "domain": "Data Engineering"
-  },
-  {
-    "repo": "apache/flink",
     "domain": "Data Engineering"
   },
   {
@@ -30,5 +22,13 @@
   {
     "repo": "donnemartin/system-design-primer",
     "domain": "System Design"
+  },
+  {
+    "repo": "datawhalechina/diy-llm",
+    "domain": "LLM Engineering"
+  },
+  {
+    "repo": "weiruihhh/cs336_note_and_hw",
+    "domain": "LLM Engineering"
   }
 ]

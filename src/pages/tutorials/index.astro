@@ -1,0 +1,24 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getCollection } from 'astro:content';
+import { learningPaths } from '../../data/learning';
+const lessons=(await getCollection('tutorials',({data})=>!data.draft)).sort((a,b)=>a.data.order-b.data.order);
+---
+<Base title="技术教程" description="六条学习路线的独立原创教程：原理、代码、动手实验和验收">
+  <div class="container listing-page">
+    <div class="page-eyebrow">JYC / OPEN ENGINEERING COURSES</div>
+    <h1>实战技术教程<span class="accent">.</span></h1>
+    <p class="page-lead">不同于链接清单：这里提供原创讲义、可抄录的最小示例、实验步骤、失败分析和验收问题。内容按技术领域组织；例子属于教学示意，未经执行的项目测试不会被标记为已验证。</p>
+    <div class="learning-context"><div><span>当前公开教程</span><p>{lessons.length} 篇可阅读课程</p></div><div><span>课程原则</span><p>原理 → 最小实现 → 实验 → 解释结果 → 反例与边界</p></div></div>
+    {learningPaths.map(path=><section class="tutorial-track-block" id={path.slug}>
+      <div class="section-heading resources-title">
+        <div><div class="section-kicker">COURSE / {path.subtitle}</div><h2>{path.title}<span class="accent">.</span></h2><p>{path.summary}</p></div>
+        <a href={`/learning/${path.slug}/`} class="text-link">完整路线 ↗</a>
+      </div>
+      <div class="tutorial-lesson-list">{lessons.filter(l=>l.data.track===path.slug).map((lesson,i)=><a href={`/tutorials/${lesson.id}/`} class="tutorial-lesson-card">
+        <span class="tutorial-lesson-number">{String(i+1).padStart(2,'0')}</span><div><h3>{lesson.data.title}</h3><p>{lesson.data.description}</p><div class="tags"><span>{lesson.data.level}</span><span>{lesson.data.duration}</span>{lesson.data.tags.slice(0,2).map(t=><span>{t}</span>)}</div></div><span aria-hidden="true">↗</span>
+      </a>)}</div>
+      {lessons.filter(l=>l.data.track===path.slug).length===0&&<p class="progress-note">本路线暂未发布正文教程。可以先查看路线的阶段任务。</p>}
+    </section>)}
+  </div>
+</Base>

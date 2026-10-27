@@ -1,0 +1,39 @@
+---
+import Base from '../../layouts/Base.astro';
+import ReadingToc from '../../components/ReadingToc.astro';
+import { getCollection,render } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+import { learningPaths } from '../../data/learning';
+export async function getStaticPaths(){
+  const lessons=await getCollection('tutorials',({data})=>!data.draft);
+  return lessons.map(entry=>({params:{slug:entry.id},props:{entry}}));
+}
+const {entry}=Astro.props as {entry:CollectionEntry<'tutorials'>};
+const {Content,headings}=await render(entry);
+const path=learningPaths.find(p=>p.slug===entry.data.track);
+const related=(await getCollection('tutorials',({data})=>!data.draft && data.track===entry.data.track)).sort((a,b)=>a.data.order-b.data.order);
+const index=related.findIndex(item=>item.id===entry.id);
+const previous=related[index-1];const next=related[index+1];
+---
+<Base title={entry.data.title} description={entry.data.description}>
+  <div class="container reader-grid">
+    <article class="reading-article">
+      <div class="breadcrumbs"><a href="/">首页</a><span>/</span><a href="/tutorials/">教程</a><span>/</span><a href={`/learning/${entry.data.track}/`}>{path?.title??entry.data.track}</a></div>
+      <div class="page-eyebrow">LESSON {String(entry.data.order).padStart(2,'0')} / {entry.data.level} / {entry.data.duration}</div>
+      <h1>{entry.data.title}</h1>
+      <p class="article-intro">{entry.data.description}</p>
+      <div class="tags article-tags"><span>原创教程</span>{entry.data.tags.map(tag=><span>{tag}</span>)}</div>
+      {entry.data.source&&<p class="source-alert">学习参考：<a href={entry.data.source} target="_blank" rel="noopener noreferrer">查看外部参考仓库或文档 ↗</a>。本文是独立编写的讲义，不是原文镜像或作业答案转载。</p>}
+      <ReadingToc headings={headings}/>
+      <div class="prose"><Content/></div>
+      <nav class="article-end" aria-label="教程前后章节">
+        {previous?<a href={`/tutorials/${previous.id}/`}>← 上一讲：{previous.data.title}</a>:<a href="/tutorials/">← 返回课程目录</a>}
+        {next?<a href={`/tutorials/${next.id}/`}>下一讲：{next.data.title} →</a>:<a href={`/learning/${entry.data.track}/`}>返回学习路线 →</a>}
+      </nav>
+    </article>
+    <aside class="toc" aria-label="本页目录">
+      <div class="toc-title">本讲内容</div>
+      {headings.filter(h=>h.depth===2||h.depth===3).map(h=><a class:list={['toc-item',{'toc-nested':h.depth===3}]} href={`#${h.slug}`}>{h.text}</a>)}
+    </aside>
+  </div>
+</Base>
