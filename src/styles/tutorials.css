@@ -1,0 +1,49 @@
+/* Original full-course lesson surfaces: readable technical content over JYC neon theme. */
+.learning-tutorial-intro{
+  display:flex;justify-content:space-between;align-items:center;gap:24px;
+  background:linear-gradient(115deg,#262515 0%,#14151a 80%);
+  border:1px solid #9f8e2c;padding:25px 28px;margin:24px 0 38px;
+  clip-path:polygon(0 0,100% 0,100% calc(100% - 17px),calc(100% - 17px) 100%,0 100%);
+}
+.learning-tutorial-intro strong{color:var(--neon-yellow);font-size:17px;line-height:1.5}
+.learning-tutorial-intro p{color:#c9c5b9;font-size:13px;line-height:1.85;max-width:700px;margin:9px 0 0}
+.learning-tutorial-intro .btn{white-space:nowrap}
+.tutorial-track-block{border-top:1px solid #5d5434;margin-top:56px;padding-top:4px}
+.tutorial-track-block .resources-title{margin-top:40px}
+.tutorial-lesson-list{display:grid;gap:11px}
+.tutorial-lesson-card{
+  display:grid;grid-template-columns:42px minmax(0,1fr) 20px;
+  align-items:center;gap:18px;min-height:105px;
+  padding:17px 23px;border:1px solid #5c5535;background:#17171a;
+  color:var(--ink);transition:border-color .18s ease,background .18s ease;
+}
+.tutorial-lesson-card:hover{border-color:var(--neon-yellow);background:#242215}
+.tutorial-lesson-card h3{font-size:17px;line-height:1.5;letter-spacing:-.02em;margin:0 0 5px}
+.tutorial-lesson-card p{font-size:12px;color:#b9b8b2;line-height:1.7;margin:0 0 9px}
+.tutorial-lesson-card>.tutorial-lesson-number{
+  font:750 13px ui-monospace,SFMono-Regular,Consolas,monospace;
+  color:var(--neon-yellow);align-self:start;padding-top:4px;
+}
+.tutorial-lesson-card>span:last-child{color:var(--neon-yellow);font-size:19px}
+.tutorial-lesson-card .tags{gap:5px}
+.tutorial-lesson-card .tags span{font-size:10px;padding:3px 7px}
+.roadmap-lessons{padding-bottom:8px}
+.roadmap-lessons .resources-title{margin-top:57px}
+.prose a{overflow-wrap:anywhere}
+.prose img{max-width:100%;height:auto}
+.prose pre{max-width:100%}
+.prose table{max-width:100%}
+@media(max-width:780px){
+  .learning-tutorial-intro{align-items:stretch;flex-direction:column;padding:19px 17px;gap:17px}
+  .learning-tutorial-intro .btn{align-self:flex-start}
+}
+@media(max-width:560px){
+  .tutorial-track-block{margin-top:48px}
+  .tutorial-lesson-card{grid-template-columns:24px minmax(0,1fr) 15px;gap:10px;padding:14px 12px}
+  .tutorial-lesson-card h3{font-size:15px;line-height:1.5}
+  .tutorial-lesson-card p{font-size:12px}
+  .tutorial-lesson-card .tags{gap:4px}
+  .tutorial-lesson-card>.tutorial-lesson-number{font-size:10px}
+  .learning-tutorial-intro strong{font-size:15px}
+}
+@media(prefers-reduced-motion:reduce){.tutorial-lesson-card{transition:none}}
