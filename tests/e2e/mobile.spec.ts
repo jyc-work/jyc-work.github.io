@@ -144,7 +144,7 @@ test('cyberpunk visual FX respects reduced-motion OS preference',async ({page})=
 test('learning progress self-check persists across refresh and dashboard updates',async({page})=>{
   await page.setViewportSize({width:375,height:780});
   await page.goto('/learning/');
-  await expect(page.locator('#learning-progress-total')).toHaveText('0 / 20');
+  await expect(page.locator('#learning-progress-total')).toHaveText('0 / 24');
   await page.goto('/learning/agent-engineering/');
   const checkbox=page.getByRole('checkbox',{name:'标记阶段 01完成'});
   await checkbox.check();
@@ -152,7 +152,7 @@ test('learning progress self-check persists across refresh and dashboard updates
   await page.reload();
   await expect(checkbox).toBeChecked();
   await page.goto('/learning/');
-  await expect(page.locator('#learning-progress-total')).toHaveText('1 / 20');
+  await expect(page.locator('#learning-progress-total')).toHaveText('1 / 24');
   await expect(page.locator('[data-progress-slug="agent-engineering"] [data-progress-label]')).toHaveText('1 / 4 阶段');
 });
 
@@ -163,7 +163,7 @@ test('learning progress backup import updates aggregate while excluding unknown 
     name:'backup.json',mimeType:'application/json',
     buffer:Buffer.from(JSON.stringify({version:1,progress:{'java-backend':[0,2],'unknown-track':[0,1,2]}}))
   });
-  await expect(page.locator('#learning-progress-total')).toHaveText('2 / 20');
+  await expect(page.locator('#learning-progress-total')).toHaveText('2 / 24');
   await expect(page.locator('#learning-storage-status')).toContainText('已从备份导入');
   await page.goto('/learning/java-backend/');
   await expect(page.getByRole('checkbox',{name:'标记阶段 01完成'})).toBeChecked();
@@ -289,4 +289,47 @@ test('No misleading English version switch on untranslated Chinese pages',async(
   await page.goto('/en/projects/jyc-engineering-lab/');
   await expect(page.getByRole('link',{name:'Read in Chinese'})).toHaveAttribute('href','/projects/jyc-engineering-lab/');
   await expect(page.getByRole('navigation',{name:'Main navigation'})).toBeVisible();
+});
+
+
+test('tutorial library has original chapters and links from all learning paths',async({page})=>{
+  await page.setViewportSize({width:390,height:780});
+  await page.goto('/tutorials/');
+  await expect(page.locator('.tutorial-lesson-card')).toHaveCount(11);
+  await expect(page.getByRole('heading',{name:'LLM 原理与工程'})).toBeVisible();
+  await expect(page.getByRole('link',{name:/从 UTF-8 字节到 BPE/})).toBeVisible();
+  await page.goto('/learning/llm-engineering/');
+  await expect(page.locator('.roadmap-lessons .tutorial-lesson-card')).toHaveCount(6);
+  await page.locator('.roadmap-lessons .tutorial-lesson-card').first().click();
+  await expect(page).toHaveURL(/\/tutorials\/llm-01-tokenizer\/$/);
+  await expect(page.getByRole('heading',{name:/从 UTF-8 字节到 BPE/})).toBeVisible();
+  await expect(page.locator('.prose pre')).toHaveCount(1);
+  await expect(page.getByRole('button',{name:'复制代码'})).toBeVisible();
+});
+
+test('sixth learning track self-assessment still persists and aggregate total is 24',async({page})=>{
+  await page.setViewportSize({width:320,height:740});
+  await page.goto('/learning/');
+  await expect(page.locator('#learning-progress-total')).toHaveText('0 / 24');
+  await page.goto('/learning/llm-engineering/');
+  await page.getByRole('checkbox',{name:'标记阶段 01完成'}).check();
+  await page.goto('/learning/');
+  await expect(page.locator('#learning-progress-total')).toHaveText('1 / 24');
+});
+
+test('new tutorial routes are readable at 320px without document horizontal overflow',async({page})=>{
+  await page.setViewportSize({width:320,height:750});
+  for(const path of ['/tutorials/','/tutorials/llm-02-causal-attention/','/tutorials/java-concurrent-idempotency/']){
+    await page.goto(path);
+    await expect(page.locator('h1')).toBeVisible();
+    await expect.poll(()=>page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(322);
+  }
+});
+
+test('tutorials are visible in search index',async({request})=>{
+  const response=await request.get('/search-index.json');
+  expect(response.ok()).toBeTruthy();
+  const rows=await response.json();
+  expect(rows.filter((x:{type:string})=>x.type==='教程')).toHaveLength(11);
+  expect(rows.some((x:{url:string})=>x.url==='/tutorials/llm-01-tokenizer/')).toBeTruthy();
 });
