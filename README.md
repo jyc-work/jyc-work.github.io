@@ -110,3 +110,14 @@ Run locally: `python3 scripts/blog_quality.py && python3 -m unittest discover -s
 Chinese remains the default at `/`. Independently edited English work lives at `/en/` in the same Astro codebase. Only real English pages are linked from locale switches; untranslated notes do not pretend to have translations.
 
 Each English engineering article includes a `zhSlug`, exact source revision, verification level, and traceable evidence. The publishing gate validates the Chinese counterpart and the pinned revision. Run `python3 scripts/check_en_publication.py` or the main CI workflow. No machine bulk-translation service, extra host, or backend is needed.
+
+
+## Original engineering tutorials / 技术教程
+
+- `/tutorials/`: 11 original hands-on lessons grouped across six learning tracks
+- `/learning/`: 6 roadmaps × 4 stages with local-only self-assessment progress
+- LLM engineering follows CS336 themes with runnable toy exercises (BPE, causal attention, next-token training, memory budget, evaluation, inference basics)
+- Other tracks include Agent Tool Loop, Java concurrency/idempotency, Kafka–Flink incident reasoning, TypeScript UI state, and SLO/ADR design
+- Source materials are linked for attribution, not copied. Both third-party CS336-related repos use CC BY-NC-SA terms; any actual re-use must honor their licenses.
+- The curated recommended GitHub repository list and tech-watch source list both remain at 8.
+- All educational examples are standalone/toy scope; published code snippets are not an attestation that full-scale training workloads ran successfully.
