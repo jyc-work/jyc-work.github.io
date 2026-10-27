@@ -51,4 +51,21 @@ const commands = defineCollection({
   })
 });
 
-export const collections = { blog, enBlog, knowledge, commands };
+const tutorials = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/tutorials' }),
+  schema: z.object({
+    title: z.string(),
+    description: z.string(),
+    date: z.coerce.date(),
+    updated: z.coerce.date().optional(),
+    track: z.enum(['llm-engineering','agent-engineering','java-backend','data-engineering','fullstack','software-architecture']),
+    order: z.number().int().nonnegative(),
+    level: z.enum(['入门','进阶','综合']),
+    duration: z.string(),
+    tags: z.array(z.string()).default([]),
+    source: z.string().url().optional(),
+    draft: z.boolean().default(false)
+  })
+});
+
+export const collections = { blog, enBlog, knowledge, commands, tutorials };
