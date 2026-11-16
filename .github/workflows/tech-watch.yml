@@ -1,6 +1,8 @@
 name: Technology watch - review PR
 
 on:
+  schedule:
+    - cron: '17 12 * * *'
   workflow_dispatch:
 
 permissions:
